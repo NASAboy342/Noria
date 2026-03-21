@@ -5,6 +5,10 @@ import heroImg from '../assets/hero.png'
 import vueLogo from '../assets/vue.svg'
 
 const count = ref(0)
+const getDateNow = () => {
+  const now = new Date()
+  return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+}
 </script>
 
 <template>
@@ -19,6 +23,7 @@ const count = ref(0)
       <p>Edit <code>src/App.vue</code> and save to test <code>HMR</code></p>
     </div>
     <button class="counter" @click="count++">Count is {{ count }}</button>
+    <p>Current time: {{ getDateNow() }}</p>
   </section>
 
   <div class="ticks"></div>
