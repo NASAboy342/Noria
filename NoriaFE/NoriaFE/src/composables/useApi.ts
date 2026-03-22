@@ -43,7 +43,7 @@ export default function useApi() {
                 id: 1,
                 roomName: 'A1',
                 phoneNumber: '09883373',
-                floor: 'ground',
+                floor: 'ផ្ទាល់ដី',
                 isPaid: false,
                 owe: 0,
                 note: ''
@@ -53,17 +53,17 @@ export default function useApi() {
                 id: 2,
                 roomName: 'A2',
                 phoneNumber: '09883374',
-                floor: 'ground',
-                isPaid: false,
+                floor: 'ផ្ទាល់ដី',
+                isPaid: true,
                 owe: 0,
                 note: ''
             },
             {
                 buildingId: 1,
                 id: 3,
-                roomName: 'A3',
+                roomName: 'A5',
                 phoneNumber: '09883375',
-                floor: 'ground',
+                floor: 'ទី1',
                 isPaid: false,
                 owe: 0,
                 note: ''
