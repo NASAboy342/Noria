@@ -10,7 +10,7 @@
         <div class="building-summary-container">
             <div class="flex" style="margin-bottom: 25px;">
                 <img src="/icons8-building-96.png" alt="" style="width: 35px">
-                <h2>{{ building.name }}</h2>
+                <p class="building-name">{{ building.name }}</p>
             </div>
 
           <p>បន្ទប់សរុប: {{ building.rooms }}</p>
@@ -79,5 +79,8 @@ onMounted(async () => {
 .building-image {
   border-radius: 8px;
   border: solid 8px var(--border-color);
+}
+.building-name{
+    font-size: 24px;
 }
 </style>
