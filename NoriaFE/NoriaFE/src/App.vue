@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import DesktopLayout from './layouts/DesktopLayout.vue'
 </script>
 
 <template>
-  <HelloWorld />
+  <div class="app-border"></div>
+  <DesktopLayout/>
 </template>
