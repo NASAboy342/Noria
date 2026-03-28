@@ -1,3 +1,10 @@
+<script setup lang="ts">
+
+const emit = defineEmits<{
+    (e: "close"): void;
+}>();
+</script>
+
 <template>
     <div class="container">
         <div class="header">
@@ -152,9 +159,9 @@
             </div>
         </div>
         <div class="footer">
-            <div class="button negative">បកក្រោយ</div>
-            <div class="button selected">រស្សារទុក</div>
-            <div class="button focus">ព្រីន</div>
+            <div class="button negative" @click="emit('close')">បកក្រោយ</div>
+            <div class="button selected" @click="emit('close')">រស្សារទុក</div>
+            <div class="button focus" @click="emit('close')">ព្រីន</div>
         </div>
     </div>
 </template>

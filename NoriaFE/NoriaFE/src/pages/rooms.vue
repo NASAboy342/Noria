@@ -19,6 +19,9 @@ onMounted(async () => {
     }));
     console.log("Fetched rooms:", rooms.value);
 });
+const isShowRoomDetails = ref(false);
+
+
 </script>
 <style scoped>
 .rooms-page {
@@ -53,12 +56,12 @@ onMounted(async () => {
     <div class="rooms-page">
         <div class="card">
             <h1>Rooms</h1>
-            <customTable :objects="roomInKhmer"/>
+            <customTable :objects="roomInKhmer" @row-click="isShowRoomDetails = true"/>
         </div>
 
-        <div class="popup-container">
+        <div class="popup-container" v-if="isShowRoomDetails">
             <div class="card roomDetailsPopup">
-                <roomDetail />
+                <roomDetail @close="isShowRoomDetails = false"/>
             </div>
         </div>
     </div>
