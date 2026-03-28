@@ -31,8 +31,21 @@ onMounted(async () => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(760px, calc(100% - 32px));
+    width: 1000px;
     z-index: 10;
+}
+.popup-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9;
+    background-color: rgba(0, 0, 0, 0.309);
+    backdrop-filter: blur(5px);
 }
 </style>
 
@@ -43,8 +56,10 @@ onMounted(async () => {
             <customTable :objects="roomInKhmer"/>
         </div>
 
-        <div class="card roomDetailsPopup">
-            <roomDetail />
+        <div class="popup-container">
+            <div class="card roomDetailsPopup">
+                <roomDetail />
+            </div>
         </div>
     </div>
 </template>
