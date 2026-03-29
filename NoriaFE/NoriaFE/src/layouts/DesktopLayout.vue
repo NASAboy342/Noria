@@ -28,7 +28,7 @@ watch(
         to="/"
         :class="['button', 'nav-option', { selected: currentPage === '/' }]"
       >
-        <img src="/icons8-dashboard-96.png" alt="Dashboard Icon" style="width: 28px;" />
+        📊
         <p>ផ្សេងៗ</p>
       </router-link>
       <router-link
@@ -39,13 +39,13 @@ watch(
           { selected: currentPage === '/rooms' },
         ]"
       >
-        <img src="/icons8-room-96.png" alt="Rooms Icon" style="width: 28px;" />
+        🛏️
         <p>បន្ទប់</p>
       </router-link>
     </div>
   </div>
   <div class="card conten">
-    <div class="card page-name selected"><p>{{ pageName }}</p></div>
+    <div class="card page-name"><p>{{ pageName }}</p></div>
     <router-view></router-view>
   </div>
 </template>
@@ -61,8 +61,10 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 250px;
-  height: 100vh;
+  left: 25px;
+  top: 25px;
+  bottom: 25px;
+  width: 200px;
 }
 .conten {
   position: relative;
@@ -74,17 +76,18 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 10px;
+  box-shadow: unset;
 }
 .page-name {
   width: fit-content;
   font-size: 24px;
   font-weight: bold;
-  padding-top: 10px;
-  padding-bottom: 5px;
+  color: var(--primary-text-color);
 }
 .nav-option {
   justify-content: flex-start;
   padding-left: 20px;
   text-decoration: none;
+  width: 160px;
 }
 </style>

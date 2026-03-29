@@ -49,6 +49,7 @@ const formatHeader = (key: string) => {
 
 .table-wrap {
     overflow-x: auto;
+    padding: 5px;
 }
 
 .data-table {

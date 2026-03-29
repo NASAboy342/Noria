@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <p>សូមជ្រើសរើសអគារដើម្បីមើលព័ត៌មានលម្អិត</p>
+    <p style="color: var(--secondary-text-color);">សូមជ្រើសរើសអគារដើម្បីមើលព័ត៌មានលម្អិត</p>
     <div class="building-list">
       <router-link :to="`/rooms?id=${building.id}`"
         v-for="building in buildings"
@@ -9,20 +9,21 @@
       >
         <div class="building-summary-container">
             <div class="flex" style="margin-bottom: 25px;">
-                <img src="/icons8-building-96.png" alt="" style="width: 35px">
-                <p class="building-name">{{ building.name }}</p>
+                <p class="building-name">🏢 {{ building.name }}</p>
             </div>
 
-          <p>បន្ទប់សរុប: {{ building.rooms }}</p>
-          <p>បន្ទប់ទំនេរ: {{ building.rooms - building.occupiedRooms }}</p>
-          <p>បន្ទប់កំពុងប្រើប្រាស់: {{ building.occupiedRooms }}</p>
-          <p>បន្ទប់បង់លុយរួច: {{ building.paidRooms }}</p>
-          <p>បន្ទប់មិនទាន់បង់លុយ: {{ building.rooms - building.paidRooms }}</p>
+          <div style="color: var(--secondary-text-color);" class="flex colomn">
+            <p>បន្ទប់សរុប: {{ building.rooms }}</p>
+            <p>បន្ទប់ទំនេរ: {{ building.rooms - building.occupiedRooms }}</p>
+            <p>បន្ទប់កំពុងប្រើប្រាស់: {{ building.occupiedRooms }}</p>
+            <p>បន្ទប់បង់លុយរួច: {{ building.paidRooms }}</p>
+            <p>បន្ទប់មិនទាន់បង់លុយ: {{ building.rooms - building.paidRooms }}</p>
+          </div>
         </div>
         <img
           :src="building.img"
           alt="Building Icon"
-          class="building-image"
+          class="building-image card"
           style="width: 200px"
         />
       </router-link>
@@ -77,10 +78,10 @@ onMounted(async () => {
   margin: 0;
 }
 .building-image {
-  border-radius: 8px;
-  border: solid 8px var(--border-color);
+  padding: 1px;
 }
 .building-name{
     font-size: 24px;
+    font-weight: bold;
 }
 </style>

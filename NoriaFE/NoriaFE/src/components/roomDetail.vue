@@ -8,12 +8,12 @@ const emit = defineEmits<{
 <template>
     <div class="container">
         <div class="header">
-                <h1 style="margin-top: unset;">វិក្កយបត្យ បន្ទប់ ទឹក ភ្លើង</h1>
+                <h1 style="margin-top: unset;">វិក្កយបត្រ បន្ទប់+ទឹក+ភ្លើង</h1>
         </div>
         <div class="content">
-            <div class="flex">
+            <div class="flex" style=" color: var(--secondary-text-color);">
                 <div class="flex">
-                    <p>លេខទូរស័ឰ</p>
+                    <p>លេខទូរស័ព្ទ</p>
                     <input type="text" class="input"/>
                 </div>
                 <div class="flex">
@@ -21,7 +21,7 @@ const emit = defineEmits<{
                     <input type="text" class="input"/>
                 </div>
             </div>
-            <div class="flex">
+            <div class="flex" style=" color: var(--secondary-text-color);">
                 <div class="flex">
                     <p>គិតចាប់ពីថ្ងៃទី</p>
                     <input type="text" class="input" style="width: 30px;"/>
@@ -50,17 +50,17 @@ const emit = defineEmits<{
             <div class="table-wrap">
                 <table>
                     <tbody>
-                        <tr>
+                        <tr style=" color: var(--secondary-text-color);">
                             <td>
                                 <p>លេខកត់ត្រាទឹក</p>
                                 <div class="flex">
                                     <div>
                                         <p>លេខថ្មី</p>
-                                        <input type="text" class="input"/>
+                                        <input type="text" class="input" style="margin-top: 5px;"/>
                                     </div>
                                     <div>
                                         <p>លេខចាស់</p>
-                                        <input type="text" class="input"/>
+                                        <input type="text" class="input" style="margin-top: 5px;"/>
                                     </div>
                                 </div>
                             </td>
@@ -83,17 +83,17 @@ const emit = defineEmits<{
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr style=" color: var(--secondary-text-color);">
                             <td>
                                 <p>លេខកត់ត្រាភ្លើង</p>
                                 <div class="flex">
                                     <div>
                                         <p>លេខថ្មី</p>
-                                        <input type="text" class="input"/>
+                                        <input type="text" class="input" style="margin-top: 5px;"/>
                                     </div>
                                     <div>
                                         <p>លេខចាស់</p>
-                                        <input type="text" class="input"/>
+                                        <input type="text" class="input" style="margin-top: 5px;"/>
                                     </div>
                                 </div>
                             </td>
@@ -116,11 +116,11 @@ const emit = defineEmits<{
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr style=" color: var(--secondary-text-color);">
                             <td>
                                 <div class="">
                                     <p>តំលៃបន្ទប់ជួល</p>
-                                    <input type="text" class="input"/>
+                                    <input type="text" class="input" style="margin-top: 5px;"/>
                                 </div>
                             </td>
                             <td>
@@ -159,9 +159,9 @@ const emit = defineEmits<{
             </div>
         </div>
         <div class="footer">
-            <div class="button negative" @click="emit('close')">បកក្រោយ</div>
-            <div class="button selected" @click="emit('close')">រស្សារទុក</div>
-            <div class="button focus" @click="emit('close')">ព្រីន</div>
+            <div class="button negative" @click="emit('close')">⌫ បកក្រោយ</div>
+            <div class="button" @click="emit('close')">✔ រក្សាទុក</div>
+            <div class="button" @click="emit('close')">🖨 ព្រីន</div>
         </div>
     </div>
 </template>

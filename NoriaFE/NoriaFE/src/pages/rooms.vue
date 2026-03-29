@@ -47,15 +47,15 @@ const isShowRoomDetails = ref(false);
     justify-content: center;
     align-items: center;
     z-index: 9;
-    background-color: rgba(0, 0, 0, 0.309);
-    backdrop-filter: blur(5px);
+    /* background-color: rgba(0, 0, 0, 0.03); */
+    backdrop-filter: blur(2px);
 }
 </style>
 
 <template>
     <div class="rooms-page">
         <div class="card">
-            <h1>Rooms</h1>
+            <h1>🛏️ Rooms</h1>
             <customTable :objects="roomInKhmer" @row-click="isShowRoomDetails = true"/>
         </div>
 
