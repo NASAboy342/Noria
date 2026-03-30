@@ -84,7 +84,7 @@ const formatHeader = (key: string) => {
     font-style: italic;
 }
   .data-table tbody tr:hover {
-        background-color: var(--fourth-color);
+        background-color: var(--hover-color);
         cursor: pointer;
     }
 

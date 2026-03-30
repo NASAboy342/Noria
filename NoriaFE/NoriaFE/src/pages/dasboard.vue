@@ -71,7 +71,7 @@ onMounted(async () => {
   transition: background-color 0.3s ease;
 }
 .building-card:hover {
-  background-color: var(--fourth-color);
+  background-color: var(--hover-color);
 }
 .building-card h2,
 .building-card p {

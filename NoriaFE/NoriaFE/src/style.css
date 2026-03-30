@@ -1,16 +1,23 @@
 :root {
-  --primary-color: #CCD97F;
-  --secondary-color: #E7F68F;
-  --third-color: #F3FCC7;
-  --fourth-color: #D5F6E5;
+  --primary-color: #165dfc;
+  --secondary-color: #0092b9;
+  --third-color: #990ffa;
+  --hover-color: #eafaff;
   --background-color: rgb(240, 244, 248);
   --back-color: rgb(240, 244, 248);
   --border-color: #d2d9e3;
-  --primary-text-color: #1657d8;
-  --secondary-text-color: #4b4b4b;
-  --negative-color: #ffaaaa;  
+  --primary-text-color: #1e2938;
+  --secondary-text-color: #6b7282;
+  --negative-color: #f64900;  
 
   --border-width: 8px;
+
+  --pop-shadow-x-shallow: rgb(255, 255, 255) -2px -2px 5px, rgb(209, 217, 230) 2px 2px 5px;
+  --pop-shadow-shallow: rgb(255, 255, 255) -4px -4px 10px, rgb(209, 217, 230) 4px 4px 10px;
+  --pop-shadow: rgb(255, 255, 255) -6px -6px 15px, rgb(209, 217, 230) 6px 6px 15px;
+  --pop-shadow-high: rgb(255, 255, 255) -8px -8px 20px, rgb(209, 217, 230) 8px 8px 20px;
+  --dented-shadow: rgb(255, 255, 255) -4px -4px 10px inset, rgb(209, 217, 230) 4px 4px 10px inset;
+  --dented-shadow-shallow: rgb(255, 255, 255) -2px -2px 5px inset, rgb(209, 217, 230) 2px 2px 5px inset;
 }
 
 body {
@@ -31,8 +38,7 @@ body {
   background-color: var(--background-color);
   border-radius: var(--border-width);
   padding: 20px;
-  box-shadow: rgb(255, 255, 255) -6px -6px 15px, rgb(209, 217, 230) 6px 6px 15px;
-    
+  box-shadow: var(--pop-shadow);
 }
 .card p{
   margin: 0;
@@ -40,7 +46,7 @@ body {
 
 .button {
   background-color: var(--back-color);
-  color: var(--primary-text-color);
+  color: var(--primary-color);
   border: none;
   border-radius: var(--border-width);
   padding-left: 15px;
@@ -54,7 +60,7 @@ body {
   justify-content: center;
   font-size: 24px;
   font-weight: bold;
-  box-shadow: rgb(255, 255, 255) -6px -6px 15px, rgb(209, 217, 230) 6px 6px 15px;
+  box-shadow: var(--pop-shadow);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   width: fit-content;
 }
@@ -63,14 +69,16 @@ body {
 }
 
 .button:hover {
-  box-shadow: rgb(255, 255, 255) -8px -8px 15px, rgb(209, 217, 230) 8px 8px 15px;
+  box-shadow: var(--pop-shadow-high)
 }
 .button:active {
-  box-shadow: rgb(255, 255, 255) -6px -6px 15px inset, rgb(209, 217, 230) 6px 6px 15px inset;
+  box-shadow: var(--dented-shadow);
+  text-shadow: var(--pop-shadow-shallow);
 }
 
 .selected {
-  box-shadow: rgb(255, 255, 255) -4px -4px 10px inset, rgb(209, 217, 230) 4px 4px 10px inset;
+  box-shadow: var(--dented-shadow);
+  text-shadow: var(--pop-shadow-shallow);
 }
 .negative {
   color: var(--negative-color);
@@ -88,7 +96,7 @@ body {
   width: 100%;
   height: 100%;
   /* border: var(--border-width) solid var(--border-color); */
-  box-shadow: rgb(255, 255, 255) -4px -4px 10px inset, rgb(209, 217, 230) 4px 4px 10px inset;
+  box-shadow: var(--dented-shadow);
   border-radius: calc(var(--border-width) * 2);
   pointer-events: none;
   z-index: 9999;
@@ -107,15 +115,14 @@ body {
   justify-content: center;
 }
 .input{
-  /* background-color: var(--fourth-color); */
-  box-shadow: rgb(255, 255, 255) -3px -3px 5px inset, rgb(209, 217, 230) 3px 3px 5px inset;
+  box-shadow: var(--dented-shadow-shallow);
   border-radius: 8px;
   border: none;
   padding: 5px;
   background-color: var(--background-color);
   color: var(--secondary-text-color);
+  text-shadow: var(--pop-shadow-x-shallow);
 }
 .input:focus-visible{
   outline: none;
-  /* box-shadow: 0 0 0 2px var(--primary-color); */
 }
