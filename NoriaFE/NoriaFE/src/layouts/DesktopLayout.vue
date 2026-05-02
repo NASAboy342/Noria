@@ -75,7 +75,7 @@ watch(
   background-color: transparent;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   box-shadow: unset;
 }
 .page-name {
