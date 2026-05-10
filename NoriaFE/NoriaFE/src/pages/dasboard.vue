@@ -23,6 +23,7 @@
         <img :src="building.img" alt="Building Image" class="building-image card" style="width: 200px" />
       </router-link>
     </div>
+    <loadingComponent v-if="isShowLoading" />
   </div>
 
   <div class="popup-container" v-if="isShowAddBuildingPopup">
@@ -37,19 +38,25 @@ import { onMounted, ref } from "vue";
 import { Building } from "../models/building";
 import useApi from "../composables/useApi";
 import addBuilding from "../components/addBuilding.vue";
+import loadingComponent from "../components/loadingComponent.vue";
 
 const { getBuildings } = useApi();
 
 const buildings = ref<Building[]>([]);
 const isShowAddBuildingPopup = ref(false);
+const isShowLoading = ref(false);
 
 onMounted(async () => {
   try {
+    isShowLoading.value = true;
     const response = await getBuildings();
     buildings.value = response;
     console.log("Fetched buildings:", buildings.value);
   } catch (error) {
     console.error("Error fetching buildings:", error);
+  }
+  finally {
+    isShowLoading.value = false;
   }
 });
 </script>
