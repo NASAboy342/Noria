@@ -67,6 +67,12 @@ body {
 .button p{
   margin: 0;
 }
+.button.small {
+  padding: 10px;
+  width: fit-content;
+  height: fit-content;
+  font-size: 18px;
+}
 
 .button:hover {
   box-shadow: var(--pop-shadow-high)
@@ -114,6 +120,19 @@ body {
   align-items: center;
   justify-content: center;
 }
+.space-between {
+  justify-content: space-between;
+}
+.align-left {
+  justify-content: flex-start;
+}
+.align-right {
+  justify-content: flex-end;
+}
+.align-center {
+  align-items: center;
+}
+
 .input{
   box-shadow: var(--dented-shadow-shallow);
   border-radius: 8px;
@@ -125,4 +144,18 @@ body {
 }
 .input:focus-visible{
   outline: none;
+}
+
+.popup-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9;
+    /* background-color: rgba(0, 0, 0, 0.03); */
+    backdrop-filter: blur(2px);
 }
