@@ -193,6 +193,7 @@ const messageStore = useMessageStore()
 
 .message-text {
   word-break: break-word;
+  font-size: large;
 }
 
 /* Transitions */

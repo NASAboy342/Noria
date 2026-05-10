@@ -14,7 +14,7 @@ let _idCounter = 0
 
 export const useMessageStore = defineStore('message', () => {
   const messages = ref<AppMessage[]>([])
-  const messageLifetime = ref(5_000) // Messages live for 5 seconds
+  const messageLifetime = ref(8_000) // Messages live in milliseconds, for example, 8 seconds is 8_000
 
   function SetMessage(message: string, level: MessageLevel) {
     messages.value.push({

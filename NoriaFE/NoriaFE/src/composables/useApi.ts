@@ -1,6 +1,5 @@
-import { ref } from "vue"
 import { Building } from "../models/building"
-import { Room } from "../models/room";
+import { AddRoomPayload } from "../models/addRoomPayload";
 import { useMessageStore } from "../stores/messageStore";
 
 const API_BASE_URL = "https://noriabe.ppiinn.net";
@@ -48,62 +47,8 @@ export default function useApi() {
         return buildings;
     }
 
-    const getRooms = async (buildingId: number): Promise<Room[]> => {
-        const rooms = ref<Room[]>([
-            {
-                buildingId: 1,
-                id: 1,
-                roomName: 'A1',
-                phoneNumber: '09883373',
-                floor: 'ផ្ទាល់ដី',
-                isPaid: false,
-                owe: 0,
-                note: ''
-            },
-            {
-                buildingId: 1,
-                id: 2,
-                roomName: 'A2',
-                phoneNumber: '09883374',
-                floor: 'ផ្ទាល់ដី',
-                isPaid: true,
-                owe: 0,
-                note: ''
-            },
-            {
-                buildingId: 1,
-                id: 3,
-                roomName: 'A5',
-                phoneNumber: '09883375',
-                floor: 'ទី1',
-                isPaid: false,
-                owe: 0,
-                note: ''
-            },
-               {
-                buildingId: 2,
-                id: 1,
-                roomName: 'B1',
-                phoneNumber: '09883376',
-                floor: 'ground',
-                isPaid: false,
-                owe: 0,
-                note: ''
-            },
-               {
-                buildingId: 3,
-                id: 1,
-                roomName: 'C1',
-                phoneNumber: '09883377',
-                floor: 'ground',
-                isPaid: false,
-                owe: 0,
-                note: ''
-            },
-
-
-        ]);
-        const result = rooms.value.filter(room => room.buildingId === buildingId)
+    const getRooms = async (buildingId: number): Promise<AddRoomPayload[]> => {
+        const result = await apiGet<AddRoomPayload[]>(`/System/get-all-room-of-building?buildingId=${buildingId}`)
         messageStore.SetMessage('ព័ត៌មានបន្ទប់ត្រូវបានផ្ទុកដោយជោគជ័យ', 'success')
         return result
     }
@@ -129,6 +74,11 @@ export default function useApi() {
         messageStore.SetMessage('រក្សាទុកព័ត៌មានអគារបានជោគជ័យ', 'success')
     }
 
+    const addRoom = async (payload: AddRoomPayload): Promise<void> => {
+        await apiPost('/System/add-room', payload)
+        messageStore.SetMessage('បន្ថែមបន្ទប់បានជោគជ័យ', 'success')
+    }
+
     return {
         apiGet,
         apiPost,
@@ -136,6 +86,7 @@ export default function useApi() {
         getRooms,
         addBuilding,
         getBuildingById,
-        updateBuilding
+        updateBuilding,
+        addRoom
     }
 }
