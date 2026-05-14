@@ -1,4 +1,31 @@
 <script setup lang="ts">
+import { ref, watch } from "vue";
+import { AddRoomPayload } from "../models/addRoomPayload";
+import { RoomUsage } from "../models/roomUsage";
+import { Building } from "../models/building";
+
+const startDate = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 10));
+const endDate = ref(new Date(new Date().getFullYear(), new Date().getMonth()+1, 10));
+const newPayment = ref<RoomUsage>(new RoomUsage());
+
+const props = defineProps<{
+    room?: AddRoomPayload | null;
+    lastRoomUsage?: RoomUsage | null;
+    building?: Building | null;
+}>();
+
+watch(() => props.room, (newRoom) => {
+    if(newRoom){
+        // Initialize newPayment with default values based on the room and last usage
+        newPayment.value.roomId = newRoom.id;
+    }
+}, { immediate: true });
+
+watch(() => newPayment.value.waterUsage, (newVal) => {
+    if (props.building) {
+        newPayment.value.waterPrice = newVal * (props.building.waterPricePerUnit || 0);
+    }
+});
 
 const emit = defineEmits<{
     (e: "close"): void;
@@ -14,37 +41,37 @@ const emit = defineEmits<{
             <div class="flex" style=" color: var(--secondary-text-color);">
                 <div class="flex">
                     <p>លេខទូរស័ព្ទ</p>
-                    <input type="text" class="input"/>
+                    <input type="text" class="input" :value="props.room?.phoneNumber || ''" />
                 </div>
                 <div class="flex">
                     <p>បន្ទប់លេខ</p>
-                    <input type="text" class="input"/>
+                    <input type="text" class="input" :value="props.room?.name || ''" />
                 </div>
             </div>
             <div class="flex" style=" color: var(--secondary-text-color);">
                 <div class="flex">
                     <p>គិតចាប់ពីថ្ងៃទី</p>
-                    <input type="text" class="input" style="width: 30px;"/>
+                    <input type="text" class="input" style="width: 30px;" :value="startDate.getDate()" />
                 </div>
                 <div class="flex">
                     <p>ខែ</p>
-                    <input type="text" class="input" style="width: 30px;"/>
+                    <input type="text" class="input" style="width: 30px;" :value="startDate.getMonth()" />
                 </div>
                 <div class="flex">
                     <p>ឆ្នាំ</p>
-                    <input type="text" class="input" style="width: 30px;"/>
+                    <input type="text" class="input" style="width: 30px;" :value="startDate.getFullYear()" />
                 </div>
                 <div class="flex">
                     <p>ដល់ថ្ងៃទី</p>
-                    <input type="text" class="input" style="width: 30px;"/>
+                    <input type="text" class="input" style="width: 30px;" :value="endDate.getDate()" />
                 </div>
                 <div class="flex">
                     <p>ខែ</p>
-                    <input type="text" class="input" style="width: 30px;"/>
+                    <input type="text" class="input" style="width: 30px;" :value="endDate.getMonth()" />
                 </div>
                 <div class="flex">
                     <p>ឆ្នាំ</p>
-                    <input type="text" class="input" style="width: 30px;"/>
+                    <input type="text" class="input" style="width: 30px;" :value="endDate.getFullYear()" />
                 </div>
             </div>
             <div class="table-wrap">
@@ -56,30 +83,30 @@ const emit = defineEmits<{
                                 <div class="flex">
                                     <div>
                                         <p>លេខថ្មី</p>
-                                        <input type="text" class="input" style="margin-top: 5px;"/>
+                                        <input type="text" class="input" style="margin-top: 5px;" v-model="newPayment.waterUsage"/>
                                     </div>
                                     <div>
                                         <p>លេខចាស់</p>
-                                        <input type="text" class="input" style="margin-top: 5px;"/>
+                                        <input type="text" class="input" style="margin-top: 5px;" :value="props.lastRoomUsage?.waterUsage || 0" readonly/>
                                     </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ចំនួនm3</p>
-                                    <input type="text" class="input"/>
+                                    <input type="text" class="input" :value="newPayment.waterUsage - (props.lastRoomUsage?.waterUsage || 0)"/>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ចំនួន1m3</p>
-                                    <input type="text" class="input"/>
+                                    <input type="text" class="input" :value="props.building?.waterPricePerUnit || 0" readonly/>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ថ្លៃទឹកសរុប</p>
-                                    <input type="text" class="input"/>
+                                    <input type="text" class="input" :value="newPayment.waterPrice" readonly/>
                                 </div>
                             </td>
                         </tr>
@@ -89,11 +116,11 @@ const emit = defineEmits<{
                                 <div class="flex">
                                     <div>
                                         <p>លេខថ្មី</p>
-                                        <input type="text" class="input" style="margin-top: 5px;"/>
+                                        <input type="text" class="input" style="margin-top: 5px;" v-model="newPayment.electricityUsage"/>
                                     </div>
                                     <div>
                                         <p>លេខចាស់</p>
-                                        <input type="text" class="input" style="margin-top: 5px;"/>
+                                        <input type="text" class="input" style="margin-top: 5px;" :value="props.lastRoomUsage?.electricityUsage || 0"/>
                                     </div>
                                 </div>
                             </td>
@@ -120,7 +147,7 @@ const emit = defineEmits<{
                             <td>
                                 <div class="">
                                     <p>តំលៃបន្ទប់ជួល</p>
-                                    <input type="text" class="input" style="margin-top: 5px;"/>
+                                    <input type="text" class="input" style="margin-top: 5px;" :value="props.room?.price || 0"/>
                                 </div>
                             </td>
                             <td>

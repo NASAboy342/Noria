@@ -48,7 +48,7 @@ export default function useApi() {
     }
 
     const getRooms = async (buildingId: number): Promise<AddRoomPayload[]> => {
-        const result = await apiGet<AddRoomPayload[]>(`/System/get-all-room-of-building?buildingId=${buildingId}`)
+        const result = await apiGet<AddRoomPayload[]>(`/System/get-all-room-of-building?buildingId=${buildingId}`);
         messageStore.SetMessage('ព័ត៌មានបន្ទប់ត្រូវបានផ្ទុកដោយជោគជ័យ', 'success')
         return result
     }
@@ -79,6 +79,18 @@ export default function useApi() {
         messageStore.SetMessage('បន្ថែមបន្ទប់បានជោគជ័យ', 'success')
     }
 
+    const getRoom = async (buildingId: number, roomId: number): Promise<AddRoomPayload> => {
+        const rooms = await getRooms(buildingId);
+        const room = rooms.find(r => r.id === roomId);
+        if (!room) {
+            const errorMessage = `បន្ទប់ដែលមាន id ${roomId} មិនត្រូវបានរកឃើញ`
+            messageStore.SetMessage(errorMessage, 'error')
+            throw new Error(errorMessage)
+        }
+        messageStore.SetMessage('ព័ត៌មានលម្អិតបន្ទប់ត្រូវបានផ្ទុកដោយជោគជ័យ', 'success')
+        return room;
+    }
+
     return {
         apiGet,
         apiPost,
@@ -87,6 +99,7 @@ export default function useApi() {
         addBuilding,
         getBuildingById,
         updateBuilding,
-        addRoom
+        addRoom,
+        getRoom
     }
 }

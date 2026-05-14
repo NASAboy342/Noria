@@ -139,7 +139,7 @@ body {
   border: none;
   padding: 5px;
   background-color: var(--background-color);
-  color: var(--secondary-text-color);
+  color: var(--primary-color);
   text-shadow: var(--pop-shadow-x-shallow);
 }
 .input:focus-visible{

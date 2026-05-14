@@ -8,7 +8,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(element, index) in props.objects" :key="index" @click="$emit('row-click', element)">
+                <tr v-for="(element, index) in props.objects" :key="index" @click="$emit('row-click', index)">
                     <td v-for="key in keys" :key="String(key)">{{ element[key] }}</td>
                 </tr>
                 <tr v-if="props.objects.length === 0">
@@ -26,6 +26,10 @@ import { Room } from '../models/room';
 
 const props = defineProps<{
     objects: Room[];
+}>();
+
+const emit = defineEmits<{
+    (e: "row-click", index: number): void;
 }>();
 
 const keys = computed<(keyof Room)[]>(() => {

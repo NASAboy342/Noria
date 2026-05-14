@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import useApi from "../composables/useApi";
 import { AddRoomPayload } from "../models/addRoomPayload";
 import customTable from "../components/customTable.vue";
-import roomDetail from "../components/roomDetail.vue";
+import roomPaymentForm from "../components/roomPaymentForm.vue";
 import buildingDetail from "../components/buildingDetail.vue";
 import addRoom from "../components/addRoom.vue";
 import type { Building } from "../models/building";
@@ -27,7 +27,7 @@ const syncBuilding = async () => {
 const syncRoom = async () => {
     rooms.value = await getRooms(buildingid.value);
     roomInKhmer.value = rooms.value.map(room => ({
-        បន្ទប់លេខ: room.name , លេខទូរស័ព្ទ: room.phoneNumber ,ជាន់ទី: room.floor ,មានអ្នកស្នាក់នៅហើយឬនៅ: room.isOccupied ? "👨 មានអ្នកស្នាក់នៅ" : "🫥 គ្មានអ្នកស្នាក់នៅ",តម្លៃ: room.price
+        បន្ទប់លេខ: room.name , លេខទូរស័ព្ទ: room.phoneNumber ,ជាន់ទី: room.floor ,មានអ្នកស្នាក់នៅហើយឬនៅ: room.isOccupied ? "🟢 មានអ្នកស្នាក់នៅ" : "🔴 គ្មានអ្នកស្នាក់នៅ",តម្លៃ: room.price
     }));
 }
 
@@ -42,7 +42,13 @@ onMounted(async () => {
         isLoading.value = false;
     }
 });
-const isShowRoomDetails = ref(false);
+const isShowRoomPaymentForm = ref(false);
+
+const goToRoomDetail = (index: number) => {
+    var roomId = rooms.value[index].id;
+    console.log("Clicked row index:", index, "Room ID:", roomId);
+    window.location.href = `/roomDetail?roomId=${roomId}&buildingId=${buildingid.value}`;
+}
 
 
 </script>
@@ -52,7 +58,7 @@ const isShowRoomDetails = ref(false);
     min-height: calc(100vh - 140px);
 }
 
-.roomDetailsPopup {
+.roomPaymentFormPopup {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -93,15 +99,11 @@ const isShowRoomDetails = ref(false);
                     <div class="button small" @click="isShowBuildingDetailPopup = true">⚙️</div>
                 </div>
             </div>
-            <customTable :objects="roomInKhmer" @row-click="isShowRoomDetails = true"/>
+            <customTable :objects="roomInKhmer" @row-click="goToRoomDetail"/>
             <LoadingComponent v-if="isLoading" style="margin-top: 20px;"/>
         </div>
 
-        <div class="popup-container" v-if="isShowRoomDetails">
-            <div class="card roomDetailsPopup">
-                <roomDetail @close="isShowRoomDetails = false"/>
-            </div>
-        </div>
+
     </div>
 
     <div class="popup-container" v-if="isShowBuildingDetailPopup">
