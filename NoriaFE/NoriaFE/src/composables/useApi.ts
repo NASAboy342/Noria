@@ -1,5 +1,6 @@
 import { Building } from "../models/building"
 import { AddRoomPayload } from "../models/addRoomPayload";
+import { RoomUsage } from "../models/roomUsage";
 import { useMessageStore } from "../stores/messageStore";
 
 const API_BASE_URL = "https://noriabe.ppiinn.net";
@@ -79,6 +80,16 @@ export default function useApi() {
         messageStore.SetMessage('បន្ថែមបន្ទប់បានជោគជ័យ', 'success')
     }
 
+    const createPayment = async (payment: RoomUsage): Promise<void> => {
+        await apiPost('/System/create-payment', payment)
+        messageStore.SetMessage('រក្សាទុកវិក្កយបត្របានជោគជ័យ', 'success')
+    }
+
+    const getPaymentHistory = async (roomId: number, lastN: number): Promise<RoomUsage[]> => {
+        const result = await apiGet<RoomUsage[]>(`/System/get-room-payments?roomId=${roomId}&lastN=${lastN}`)
+        return result
+    }
+
     const getRoom = async (buildingId: number, roomId: number): Promise<AddRoomPayload> => {
         const rooms = await getRooms(buildingId);
         const room = rooms.find(r => r.id === roomId);
@@ -100,6 +111,8 @@ export default function useApi() {
         getBuildingById,
         updateBuilding,
         addRoom,
-        getRoom
+        getRoom,
+        createPayment,
+        getPaymentHistory
     }
 }

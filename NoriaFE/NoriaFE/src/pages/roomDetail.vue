@@ -1,19 +1,33 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import type { AddRoomPayload } from "../models/addRoomPayload";
 import type { RoomUsage } from "../models/roomUsage";
 import LoadingComponent from "../components/loadingComponent.vue";
 import useApi from "../composables/useApi";
 import roomPaymentForm from "../components/roomPaymentForm.vue";
 import { Building } from "../models/building";
+import CustomTable from "../components/customTable.vue";
 
 const roomId = ref<number>(0);
 const buildingId = ref<number>(0);
 const room = ref<AddRoomPayload | null>(null);
 const building = ref<Building | null>(null);
 const paymentHistory = ref<RoomUsage[]>([]);
+const paymentHistoryInKhmerForDisplay = ref<any>([]);
 const isLoading = ref(false);
 const isShowAddPaymentPopup = ref(false);
+const lastRowsToFetch = 100;
+
+const syncPaymentHistory = async () => {
+    if (!roomId.value || !buildingId.value) return;
+
+    try {
+        isLoading.value = true;
+        paymentHistory.value = await useApi().getPaymentHistory(roomId.value, lastRowsToFetch);
+    } finally {
+        isLoading.value = false;
+    }
+};
 
 onMounted(async () => {
     const params = new URLSearchParams(window.location.search);
@@ -25,7 +39,7 @@ onMounted(async () => {
         // TODO: load room and payment history
         room.value = await useApi().getRoom(buildingId.value, roomId.value);
         building.value = await useApi().getBuildingById(buildingId.value);
-        // paymentHistory.value = await getPaymentHistory(roomId.value);
+        await syncPaymentHistory();
     } finally {
         isLoading.value = false;
     }
@@ -34,6 +48,16 @@ onMounted(async () => {
 const goBack = () => {
     window.location.href = `/rooms?id=${buildingId.value}`;
 };
+
+watch(() => paymentHistory.value, () => {
+    paymentHistoryInKhmerForDisplay.value = paymentHistory.value.map(payment => ({
+        ចាប់ពី: new Date(payment.startTime).toLocaleDateString('km-KH'),
+        ដល់: new Date(payment.endTime).toLocaleDateString('km-KH'),
+        ចំនួនទឹកប្រាក់សរុប: payment.totalAmountToPay,
+        បានបង់ហើយឬនៅ: payment.isPaid ? "✅ បានបង់" : "❌ មិនទាន់បង់",
+        បានបង់នៅ:  payment.isPaid ? new Date(payment.paidOn).toLocaleDateString('km-KH') : "---",
+    }));
+});
 </script>
 
 <template>
@@ -83,7 +107,7 @@ const goBack = () => {
         <div class="card">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
                 <h2 style="margin: 0;">📋 ប្រវត្តិការបង់ប្រាក់</h2>
-                <div class="button small" @click="isShowAddPaymentPopup = true">+ បន្ថែមវិក្កយបត្រ</div>
+                <div class="button small" @click="isShowAddPaymentPopup = true">+ សរសេរវិក្កយបត្រថ្មី</div>
             </div>
 
             <LoadingComponent v-if="isLoading" style="margin-top: 20px;" />
@@ -94,7 +118,7 @@ const goBack = () => {
                 </p>
             </div>
             
-            <!-- paymentTable here -->
+            <CustomTable :objects="paymentHistoryInKhmerForDisplay" />
             
         </div>
 
@@ -104,11 +128,11 @@ const goBack = () => {
     <div class="popup-container" v-if="isShowAddPaymentPopup">
         <div class="card" style="width: fit-content;">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
-                <h2 style="margin: 0;">+ បន្ថែមវិក្កយបត្រ</h2>
+                <h2 style="margin: 0;">+ សរសេរវិក្កយបត្រថ្មី</h2>
                 <div class="button small negative" @click="isShowAddPaymentPopup = false">✕</div>
             </div>
             <!-- TODO: replace with roomPaymentForm component -->
-            <roomPaymentForm @close="isShowAddPaymentPopup = false" :room="room" :building="building"/>
+            <roomPaymentForm @close="isShowAddPaymentPopup = false" @paymentCreated="syncPaymentHistory" :room="room" :building="building" :lastRoomUsage="paymentHistory[0]"/>
         </div>
     </div>
 </template>
