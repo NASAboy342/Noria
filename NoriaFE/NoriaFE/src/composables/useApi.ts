@@ -85,6 +85,16 @@ export default function useApi() {
         messageStore.SetMessage('រក្សាទុកវិក្កយបត្របានជោគជ័យ', 'success')
     }
 
+    const doPayment = async (payment: RoomUsage): Promise<void> => {
+        await apiPost('/System/do-payment', payment)
+        messageStore.SetMessage('ការបង់ប្រាក់បានជោគជ័យ', 'success')
+    }
+
+    const getPaymentById = async (paymentId: number): Promise<RoomUsage> => {
+        const result = await apiGet<RoomUsage>(`/System/get-room-payments-by-id?paymentId=${paymentId}`)
+        return result
+    }
+
     const getPaymentHistory = async (roomId: number, lastN: number): Promise<RoomUsage[]> => {
         const result = await apiGet<RoomUsage[]>(`/System/get-room-payments?roomId=${roomId}&lastN=${lastN}`)
         return result
@@ -113,6 +123,8 @@ export default function useApi() {
         addRoom,
         getRoom,
         createPayment,
+        doPayment,
+        getPaymentById,
         getPaymentHistory
     }
 }

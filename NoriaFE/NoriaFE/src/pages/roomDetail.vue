@@ -17,6 +17,7 @@ const paymentHistoryInKhmerForDisplay = ref<any>([]);
 const isLoading = ref(false);
 const isShowAddPaymentPopup = ref(false);
 const lastRowsToFetch = 100;
+const paymentStatusLabel = ref<string>("---");
 
 const syncPaymentHistory = async () => {
     if (!roomId.value || !buildingId.value) return;
@@ -54,10 +55,17 @@ watch(() => paymentHistory.value, () => {
         ចាប់ពី: new Date(payment.startTime).toLocaleDateString('km-KH'),
         ដល់: new Date(payment.endTime).toLocaleDateString('km-KH'),
         ចំនួនទឹកប្រាក់សរុប: payment.totalAmountToPay,
-        បានបង់ហើយឬនៅ: payment.isPaid ? "✅ បានបង់" : "❌ មិនទាន់បង់",
+        បានបង់ហើយឬនៅ: payment.isPaid ? "✅ បានបង់" : (payment.totalAmountPaid ?? 0) > 0 ? "🟡 នៅសល់" : "❌ មិនទាន់បង់",
         បានបង់នៅ:  payment.isPaid ? new Date(payment.paidOn).toLocaleDateString('km-KH') : "---",
     }));
+
+    paymentStatusLabel.value = paymentHistory.value.some(payment => !payment.isPaid) ? "❌ នៅសល់" : paymentHistory.value.length > 0 ? "✅ បានបង់រួចហើយ" : "---";
 });
+
+const openRoomPaymentDetail = (index: number) => {
+    var paymentId = paymentHistory.value[index].id;
+    window.location.href = `/roomPaymentDetail?paymentId=${paymentId}&roomId=${roomId.value}&buildingId=${buildingId.value}`;
+}
 </script>
 
 <template>
@@ -97,7 +105,7 @@ watch(() => paymentHistory.value, () => {
                 <div class="info-item">
                     <p class="info-label">ស្ថានភាពការបង់ប្រាក់</p>
                     <p class="info-value" :class="room?.isOccupied ? '' : 'negative'">
-                        {{ room?.isOccupied ? '✅ បានបង់' : '❌ មិនទាន់បង់' }}
+                        {{ paymentStatusLabel }}
                     </p>
                 </div>
             </div>
@@ -118,7 +126,7 @@ watch(() => paymentHistory.value, () => {
                 </p>
             </div>
             
-            <CustomTable :objects="paymentHistoryInKhmerForDisplay" />
+            <CustomTable :objects="paymentHistoryInKhmerForDisplay" @row-click="openRoomPaymentDetail"/>
             
         </div>
 

@@ -152,7 +152,7 @@ const messageStore = useMessageStore()
 .message-popup {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  left: 24px;
   z-index: 1000;
   display: flex;
   flex-direction: column;
