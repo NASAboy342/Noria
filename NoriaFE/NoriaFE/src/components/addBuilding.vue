@@ -23,6 +23,10 @@
                     <p>ចំនួនជាន់</p>
                     <input v-model.number="formData.floors" type="number" placeholder="0" class="input" />
                 </div>
+                <div class="form-group">
+                    <p>អត្រាប្ដូរប្រាក់ KHR ទៅ USD</p>
+                    <input v-model.number="formData.khrToUSDExchangeRate" type="number" placeholder="0" class="input" />
+                </div>
             </div>
             <div class="form-row">
                 <div class="form-group">

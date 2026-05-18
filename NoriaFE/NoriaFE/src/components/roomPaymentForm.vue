@@ -23,6 +23,13 @@ const props = defineProps<{
     building?: Building | null;
 }>();
 
+const calculateTotalAmountToPay = () => {
+    var waterPrice = (newPayment.value.waterPrice || 0);
+    var electricityPrice = (newPayment.value.electricityPrice || 0);
+    var roomPriceInKHR = (props.room?.price || 0) * (props.building?.khrToUSDExchangeRate || 0);
+    newPayment.value.totalAmountToPay = waterPrice + electricityPrice + roomPriceInKHR;
+}
+
 watch(() => props.room, (newRoom) => {
     if(newRoom){
         // Initialize newPayment with default values based on the room and last usage
@@ -33,14 +40,14 @@ watch(() => props.room, (newRoom) => {
 watch(() => newPayment.value.waterUsage, (newVal) => {
     if (props.building) {
         newPayment.value.waterPrice = newVal * (props.building.waterPricePerUnit || 0);
-        newPayment.value.totalAmountToPay = (newPayment.value.waterPrice || 0) + (newPayment.value.electricityPrice || 0) + (props.room?.price || 0);
+        calculateTotalAmountToPay();
     }
 });
 
 watch(() => newPayment.value.electricityUsage, (newVal) => {
     if (props.building) {
         newPayment.value.electricityPrice = newVal * (props.building.electricityPricePerUnit || 0);
-        newPayment.value.totalAmountToPay = (newPayment.value.waterPrice || 0) + (newPayment.value.electricityPrice || 0) + (props.room?.price || 0);
+        calculateTotalAmountToPay();
     }
 });
 
@@ -135,13 +142,13 @@ const createPayment = async () => {
                             <td>
                                 <div class="flex colomn center">
                                     <p>ចំនួន1m3</p>
-                                    <input type="text" class="input" :value="props.building?.waterPricePerUnit || 0" readonly/>
+                                    <input type="text" class="input" :value="(props.building?.waterPricePerUnit || 0) + ' ៛'" readonly/>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ថ្លៃទឹកសរុប</p>
-                                    <input type="text" class="input" :value="newPayment.waterPrice" readonly/>
+                                    <input type="text" class="input" :value="newPayment.waterPrice + ' ៛'" readonly/>
                                 </div>
                             </td>
                         </tr>
@@ -168,13 +175,13 @@ const createPayment = async () => {
                             <td>
                                 <div class="flex colomn center">
                                     <p>ចំនួន1Kw</p>
-                                    <input type="text" class="input" :value="props.building?.electricityPricePerUnit || 0" readonly/>
+                                    <input type="text" class="input" :value="(props.building?.electricityPricePerUnit || 0) + ' ៛'" readonly/>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ថ្លៃភ្លើងសរុប</p>
-                                    <input type="text" class="input" :value="newPayment.electricityPrice" readonly/>
+                                    <input type="text" class="input" :value="newPayment.electricityPrice + ' ៛'" readonly/>
                                 </div>
                             </td>
                         </tr>
@@ -182,7 +189,7 @@ const createPayment = async () => {
                             <td>
                                 <div class="">
                                     <p>តំលៃបន្ទប់ជួល</p>
-                                    <input type="text" class="input" style="margin-top: 5px;" :value="props.room?.price || 0" readonly/>
+                                    <input type="text" class="input" style="margin-top: 5px;" :value="(props.room?.price || 0) + ' $'" readonly/>
                                 </div>
                             </td>
                             <td>
@@ -196,7 +203,7 @@ const createPayment = async () => {
                             <td>
                                 <div class="flex colomn center">
                                     <p>តំលៃបន្ទប់សរុប</p>
-                                    <input type="text" class="input" :value="props.room?.price || 0" readonly/>
+                                    <input type="text" class="input" :value="(props.room?.price || 0) + ' $ / ' + ((props.room?.price || 0) * (props.building?.khrToUSDExchangeRate || 0)) + ' ៛'" readonly/>
                                 </div>
                             </td>
                         </tr>
@@ -208,7 +215,7 @@ const createPayment = async () => {
                             </td>
                             <td>
                                 <div class="flex center">
-                                    <h3>{{ newPayment.totalAmountToPay }}</h3>
+                                    <h3>{{ newPayment.totalAmountToPay + ' ៛'}}</h3>
                                 </div>
                             </td>
                         </tr>

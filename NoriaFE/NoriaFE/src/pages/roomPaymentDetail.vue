@@ -134,8 +134,8 @@ const confirmPayment = async () => {
                             <span>ទឹក</span>
                         </div>
                         <div class="breakdown-detail">
-                            <span class="breakdown-sub">{{ payment?.waterUsage ?? '---' }} គូប × $ {{ building?.waterPricePerUnit ?? '---' }}</span>
-                            <span class="breakdown-value">$ {{ payment?.waterPrice ?? '---' }}</span>
+                            <span class="breakdown-sub">{{ payment?.waterUsage ?? '---' }} គូប × ៛ {{ building?.waterPricePerUnit ?? '---' }}</span>
+                            <span class="breakdown-value">៛ {{ payment?.waterPrice ?? '---' }}</span>
                         </div>
                     </div>
 
@@ -146,8 +146,8 @@ const confirmPayment = async () => {
                             <span>ភ្លើង</span>
                         </div>
                         <div class="breakdown-detail">
-                            <span class="breakdown-sub">{{ payment?.electricityUsage ?? '---' }} យូនីត × $ {{ building?.electricityPricePerUnit ?? '---' }}</span>
-                            <span class="breakdown-value">$ {{ payment?.electricityPrice ?? '---' }}</span>
+                            <span class="breakdown-sub">{{ payment?.electricityUsage ?? '---' }} យូនីត × ៛ {{ building?.electricityPricePerUnit ?? '---' }}</span>
+                            <span class="breakdown-value">៛ {{ payment?.electricityPrice ?? '---' }}</span>
                         </div>
                     </div>
 
@@ -159,7 +159,7 @@ const confirmPayment = async () => {
                             <span class="breakdown-icon">🧮</span>
                             <span>សរុប</span>
                         </div>
-                        <div class="breakdown-value total-value">$ {{ payment?.totalAmountToPay ?? '---' }}</div>
+                        <div class="breakdown-value total-value">៛ {{ payment?.totalAmountToPay ?? '---' }}</div>
                     </div>
 
                     <!-- Amount Paid -->
@@ -168,7 +168,7 @@ const confirmPayment = async () => {
                             <span class="breakdown-icon">💵</span>
                             <span>ចំនួនដែលបានបង់</span>
                         </div>
-                        <div class="breakdown-value positive">$ {{ payment?.totalAmountPaid ?? '---' }}</div>
+                        <div class="breakdown-value positive">៛ {{ payment?.totalAmountPaid ?? '---' }}</div>
                     </div>
 
                     <!-- Remaining -->
@@ -181,7 +181,7 @@ const confirmPayment = async () => {
                             class="breakdown-value"
                             :class="(payment?.totalAmountToPay ?? 0) - (payment?.totalAmountPaid ?? 0) > 0 ? 'negative' : 'positive'"
                         >
-                            $ {{ (payment?.totalAmountToPay ?? 0) - (payment?.totalAmountPaid ?? 0) }}
+                            ៛ {{ (payment?.totalAmountToPay ?? 0) - (payment?.totalAmountPaid ?? 0) }}
                         </div>
                     </div>
                 </div>
@@ -241,22 +241,22 @@ const confirmPayment = async () => {
                 <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 8px; box-shadow: var(--dented-shadow-shallow);">
                     <div class="flex space-between">
                         <span style="color: var(--secondary-text-color);">ត្រូវបង់សរុប</span>
-                        <span style="font-weight: bold;">$ {{ payment?.totalAmountToPay ?? 0 }}</span>
+                        <span style="font-weight: bold;">៛ {{ payment?.totalAmountToPay ?? 0 }}</span>
                     </div>
                     <div class="flex space-between">
                         <span style="color: var(--secondary-text-color);">បានបង់រួចហើយ</span>
-                        <span style="font-weight: bold; color: #16a34a;">$ {{ payment?.totalAmountPaid ?? 0 }}</span>
+                        <span style="font-weight: bold; color: #16a34a;">៛ {{ payment?.totalAmountPaid ?? 0 }}</span>
                     </div>
                     <div style="border-top: 1px solid var(--border-color); margin: 4px 0;" />
                     <div class="flex space-between">
                         <span style="color: var(--secondary-text-color);">នៅសល់ត្រូវបង់</span>
-                        <span style="font-weight: bold; color: var(--negative-color);">$ {{ (payment?.totalAmountToPay ?? 0) - (payment?.totalAmountPaid ?? 0) }}</span>
+                        <span style="font-weight: bold; color: var(--negative-color);">៛ {{ (payment?.totalAmountToPay ?? 0) - (payment?.totalAmountPaid ?? 0) }}</span>
                     </div>
                 </div>
 
                 <!-- Amount input -->
                 <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 14px; color: var(--secondary-text-color);">ចំនួនទឹកប្រាក់ដែលបង់ ($)</label>
+                    <label style="font-size: 14px; color: var(--secondary-text-color);">ចំនួនទឹកប្រាក់ដែលបង់ (៛)</label>
                     <input
                         type="number"
                         class="input"

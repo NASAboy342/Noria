@@ -20,7 +20,7 @@
                     <input v-model.number="form.floor" type="number" placeholder="0" class="input" />
                 </div>
                 <div class="form-group">
-                    <p>តម្លៃបន្ទប់ (៛)</p>
+                    <p>តម្លៃបន្ទប់ គឺជា($)</p>
                     <input v-model.number="form.price" type="number" placeholder="0" class="input" />
                 </div>
             </div>
