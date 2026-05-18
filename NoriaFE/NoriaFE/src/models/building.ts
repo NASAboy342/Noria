@@ -8,6 +8,7 @@ export interface AddBuildingPayload {
     floors: number
     electricityPricePerUnit: number
     waterPricePerUnit: number
+    khrToUSDExchangeRate: number
 }
 
 export class Building {
@@ -21,6 +22,7 @@ export class Building {
     floors: number = 0
     electricityPricePerUnit: number = 0
     waterPricePerUnit: number = 0
+    khrToUSDExchangeRate: number = 0
 
     toAddBuildingPayload(): AddBuildingPayload {
         return {
@@ -33,6 +35,7 @@ export class Building {
             floors: this.floors,
             electricityPricePerUnit: this.electricityPricePerUnit,
             waterPricePerUnit: this.waterPricePerUnit,
+            khrToUSDExchangeRate: this.khrToUSDExchangeRate,
         }
     }
 }

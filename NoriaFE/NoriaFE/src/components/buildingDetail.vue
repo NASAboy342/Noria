@@ -26,24 +26,16 @@
                     <input v-model.number="form.floors" type="number" class="input" />
                 </div>
                 <div class="detail-item">
-                    <p class="label">ចំនួនបន្ទប់សរុប</p>
-                    <input v-model.number="form.rooms" type="number" class="input" />
-                </div>
-                <div class="detail-item">
-                    <p class="label">បន្ទប់មានអ្នកស្នាក់</p>
-                    <input v-model.number="form.occupiedRooms" type="number" class="input" />
-                </div>
-                <div class="detail-item">
-                    <p class="label">បន្ទប់បានបង់ប្រាក់</p>
-                    <input v-model.number="form.paidRooms" type="number" class="input" />
-                </div>
-                <div class="detail-item">
                     <p class="label">តម្លៃអគ្គិសនី (១ kWh) ៛</p>
                     <input v-model.number="form.electricityPricePerUnit" type="number" class="input" />
                 </div>
                 <div class="detail-item">
                     <p class="label">តម្លៃទឹក (១ m³) ៛</p>
                     <input v-model.number="form.waterPricePerUnit" type="number" class="input" />
+                </div>
+                <div class="detail-item">
+                    <p class="label">អត្រាប្តូរប្រាក់ (KHR → USD)</p>
+                    <input v-model.number="form.khrToUSDExchangeRate" type="number" class="input" />
                 </div>
             </div>
         </div>
