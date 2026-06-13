@@ -143,7 +143,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
         <div class="card">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
                 <h2 style="margin: 0;">📋 ប្រវត្តិការបង់ប្រាក់</h2>
-                <div class="button small" @click="isShowAddPaymentPopup = true">+ សរសេរវិក្កយបត្រថ្មី</div>
+                <div class="button small" @click="isShowAddPaymentPopup = true">+🧾 សរសេរវិក្កយបត្រថ្មី</div>
             </div>
 
             <LoadingComponent v-if="isLoading" style="margin-top: 20px;" />
