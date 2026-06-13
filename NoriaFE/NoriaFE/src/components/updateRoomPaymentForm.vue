@@ -97,8 +97,8 @@ const updatePayment = async () => {
     try{
         loadingStore.startLoading("កំពុងកែប្រែវិក្កយបត្រ...");
         if(targetRoomUsage.value){
-            targetRoomUsage.value.startTime = new Date(startYear.value, startMonth.value, startDay.value).toISOString();
-            targetRoomUsage.value.endTime = new Date(endYear.value, endMonth.value, endDay.value).toISOString();
+            targetRoomUsage.value.startTime = new Date(startYear.value, startMonth.value-1, startDay.value).toISOString();
+            targetRoomUsage.value.endTime = new Date(endYear.value, endMonth.value-1, endDay.value).toISOString();
             await useApi().updatePayment(targetRoomUsage.value);
         }
         emit('paymentUpdated');

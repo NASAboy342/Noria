@@ -63,8 +63,8 @@ const emit = defineEmits<{
 const createPayment = async () => {
     try{
         loadingStore.startLoading("កំពុងរក្សាទុកវិក្កយបត្រ...");
-        newPayment.value.startTime = new Date(startYear.value, startMonth.value, startDay.value).toISOString();
-        newPayment.value.endTime = new Date(endYear.value, endMonth.value, endDay.value).toISOString();
+        newPayment.value.startTime = new Date(startYear.value, startMonth.value-1, startDay.value).toISOString();
+        newPayment.value.endTime = new Date(endYear.value, endMonth.value-1, endDay.value).toISOString();
         newPayment.value.createdOn = new Date().toISOString();
         newPayment.value.updatedOn = new Date().toISOString();
         newPayment.value.paidOn = new Date().toISOString();
