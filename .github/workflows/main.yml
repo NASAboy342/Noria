@@ -7,7 +7,7 @@ on:
 
 env:
   repositoryDir: D:\Clones\Noria
-  projectDir: D:\Clones\NoriaFE\NoriaFE
+  projectDir: D:\Clones\Noria\NoriaFE\NoriaFE
   destinationDir: D:\Websites\NoriaFE
 
 jobs:
