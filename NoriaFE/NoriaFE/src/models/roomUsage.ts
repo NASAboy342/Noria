@@ -13,4 +13,5 @@ export class RoomUsage {
   createdOn: string = ''
   updatedOn: string = ''
   paidOn: string = ''
+  adjustmentAmount: number = 0
 }

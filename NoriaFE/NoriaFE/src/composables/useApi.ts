@@ -95,8 +95,8 @@ export default function useApi() {
         return result
     }
 
-    const getPaymentHistory = async (roomId: number, lastN: number): Promise<RoomUsage[]> => {
-        const result = await apiGet<RoomUsage[]>(`/System/get-room-payments?roomId=${roomId}&lastN=${lastN}`)
+    const getPaymentHistory = async (roomId: number, top: number): Promise<RoomUsage[]> => {
+        const result = await apiGet<RoomUsage[]>(`/System/get-room-payments?roomId=${roomId}&lastN=${top}`)
         return result
     }
 
@@ -112,6 +112,24 @@ export default function useApi() {
         return room;
     }
 
+    const getLastRoomUsage = async (buildingId: number, roomId: number, beforePaymentId: number): Promise<RoomUsage> => {
+        var payments = new Array<RoomUsage>();
+        payments.push(...await getPaymentHistory(roomId, 5));
+        if (payments.length === 0) {
+            return new RoomUsage();
+        }
+        if (payments.length === 1) {
+            return new RoomUsage();
+        }
+        payments = payments.filter(p => p.id !== beforePaymentId);
+        return payments.length > 0 ? payments[0] : new RoomUsage();
+    }
+
+    const updatePayment = async (payment: RoomUsage): Promise<void> => {
+        await apiPost('/System/update-payment', payment)
+        messageStore.SetMessage('រក្សាទុកព័ត៌មានវិក្កយបត្របានជោគជ័យ', 'success')
+    }
+
     return {
         apiGet,
         apiPost,
@@ -125,6 +143,8 @@ export default function useApi() {
         createPayment,
         doPayment,
         getPaymentById,
-        getPaymentHistory
+        getPaymentHistory,
+        getLastRoomUsage,
+        updatePayment
     }
 }

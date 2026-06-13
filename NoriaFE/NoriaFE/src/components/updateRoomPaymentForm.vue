@@ -14,62 +14,94 @@ const endDate = ref(new Date(new Date().getFullYear(), new Date().getMonth()+1, 
 const endYear = ref(endDate.value.getFullYear());
 const endMonth = ref(endDate.value.getMonth());
 const endDay = ref(endDate.value.getDate());
-const newPayment = ref<RoomUsage>(new RoomUsage());
 const loadingStore = useLoadingStore();
+const room = ref<AddRoomPayload>(new AddRoomPayload());
+const building = ref<Building>(new Building());
+const targetRoomUsage = ref<RoomUsage>(new RoomUsage());
+const lastRoomUsage = ref<RoomUsage>(new RoomUsage());
 
 const props = defineProps<{
-    room?: AddRoomPayload | null;
-    lastRoomUsage?: RoomUsage | null;
-    building?: Building | null;
+    //:paymentId="paymentId" :roomId="roomId" :buildingId="buildingId" @close="isShowPaymentUpdate = false"
+    paymentId?: number;
+    roomId?: number;
+    buildingId?: number;
 }>();
 
 const calculateTotalAmountToPay = () => {
-    var waterPrice = (newPayment.value.waterPrice || 0);
-    var electricityPrice = (newPayment.value.electricityPrice || 0);
-    var roomPriceInKHR = (props.room?.price || 0) * (props.building?.khrToUSDExchangeRate || 0);
-    newPayment.value.totalAmountToPay = waterPrice + electricityPrice + roomPriceInKHR + (newPayment.value.adjustmentAmount || 0);
+    if (targetRoomUsage.value && building.value && room.value) {
+
+        var waterPrice = (targetRoomUsage.value.waterPrice || 0);
+        var electricityPrice = (targetRoomUsage.value.electricityPrice || 0);
+        var roomPriceInKHR = (room.value?.price || 0) * (building.value?.khrToUSDExchangeRate || 0);
+        targetRoomUsage.value.totalAmountToPay = waterPrice + electricityPrice + roomPriceInKHR + (targetRoomUsage.value.adjustmentAmount || 0);
+    }
+}
+const syncData = async () => {
+    if (props.buildingId) {
+        building.value = await useApi().getBuildingById(props.buildingId);
+    }
+    if (props.buildingId && props.roomId) {
+        room.value = await useApi().getRoom(props.buildingId, props.roomId);
+        if (props.paymentId) {
+            targetRoomUsage.value = await useApi().getPaymentById(props.paymentId);
+            startYear.value = new Date(targetRoomUsage.value.startTime).getFullYear();
+            startMonth.value = new Date(targetRoomUsage.value.startTime).getMonth();
+            startDay.value = new Date(targetRoomUsage.value.startTime).getDate();
+            endYear.value = new Date(targetRoomUsage.value.endTime).getFullYear();
+            endMonth.value = new Date(targetRoomUsage.value.endTime).getMonth();
+            endDay.value = new Date(targetRoomUsage.value.endTime).getDate();
+            lastRoomUsage.value = await useApi().getLastRoomUsage(props.buildingId, props.roomId, props.paymentId);
+            calculateTotalAmountToPay();
+        }
+    }
 }
 
-watch(() => props.room, (newRoom) => {
-    if(newRoom){
-        // Initialize newPayment with default values based on the room and last usage
-        newPayment.value.roomId = newRoom.id;
+watch(() => props.roomId, async (newRoomId) => {
+    if (newRoomId && props.buildingId) {
+        syncData();
     }
 }, { immediate: true });
 
-watch(() => newPayment.value.waterUsage, (newVal) => {
-    if (props.building) {
-        newPayment.value.waterPrice = newVal * (props.building.waterPricePerUnit || 0);
+watch(() => props.buildingId, async (newBuildingId) => {
+    if (newBuildingId && props.roomId) {
+        syncData();
+    }
+}, { immediate: true });
+
+watch(() => targetRoomUsage.value?.waterUsage, (newVal) => {
+    if (building.value && targetRoomUsage.value && newVal !== undefined) {
+        targetRoomUsage.value.waterPrice = newVal * (building.value.waterPricePerUnit || 0);
         calculateTotalAmountToPay();
     }
 });
 
-watch(() => newPayment.value.electricityUsage, (newVal) => {
-    if (props.building) {
-        newPayment.value.electricityPrice = newVal * (props.building.electricityPricePerUnit || 0);
+watch(() => targetRoomUsage.value?.electricityUsage, (newVal) => {
+    if (building.value && targetRoomUsage.value && newVal !== undefined) {
+        targetRoomUsage.value.electricityPrice = newVal * (building.value.electricityPricePerUnit || 0);
         calculateTotalAmountToPay();
     }
 });
 
-watch(() => newPayment.value.adjustmentAmount, (newVal) => {
-    calculateTotalAmountToPay();
+watch(() => targetRoomUsage.value?.adjustmentAmount, (newVal) => {
+    if (targetRoomUsage.value && newVal !== undefined) {
+        calculateTotalAmountToPay();
+    }
 });
 
 const emit = defineEmits<{
     (e: "close"): void;
-    (e: "paymentCreated"): void;
+    (e: "paymentUpdated"): void;
 }>();
 
-const createPayment = async () => {
+const updatePayment = async () => {
     try{
-        loadingStore.startLoading("កំពុងរក្សាទុកវិក្កយបត្រ...");
-        newPayment.value.startTime = new Date(startYear.value, startMonth.value, startDay.value).toISOString();
-        newPayment.value.endTime = new Date(endYear.value, endMonth.value, endDay.value).toISOString();
-        newPayment.value.createdOn = new Date().toISOString();
-        newPayment.value.updatedOn = new Date().toISOString();
-        newPayment.value.paidOn = new Date().toISOString();
-        await useApi().createPayment(newPayment.value);
-        emit('paymentCreated');
+        loadingStore.startLoading("កំពុងកែប្រែវិក្កយបត្រ...");
+        if(targetRoomUsage.value){
+            targetRoomUsage.value.startTime = new Date(startYear.value, startMonth.value, startDay.value).toISOString();
+            targetRoomUsage.value.endTime = new Date(endYear.value, endMonth.value, endDay.value).toISOString();
+            await useApi().updatePayment(targetRoomUsage.value);
+        }
+        emit('paymentUpdated');
         emit('close');
     }
     finally{
@@ -81,17 +113,17 @@ const createPayment = async () => {
 <template>
     <div class="container">
         <div class="header">
-                <h1 style="margin-top: unset;">វិក្កយបត្រ បន្ទប់+ទឹក+ភ្លើង</h1>
+                <h1 style="margin-top: unset;">កែសម្រួលវិក្កយបត្រ បន្ទប់+ទឹក+ភ្លើង</h1>
         </div>
         <div class="content">
             <div class="flex" style=" color: var(--secondary-text-color);">
                 <div class="flex">
                     <p>លេខទូរស័ព្ទ</p>
-                    <input type="text" class="input" :value="props.room?.phoneNumber || ''" />
+                    <input type="text" class="input" :value="room?.phoneNumber || ''" />
                 </div>
                 <div class="flex">
                     <p>បន្ទប់លេខ</p>
-                    <input type="text" class="input" :value="props.room?.name || ''" />
+                    <input type="text" class="input" :value="room?.name || ''" />
                 </div>
             </div>
             <div class="flex" style=" color: var(--secondary-text-color);">
@@ -129,30 +161,30 @@ const createPayment = async () => {
                                 <div class="flex">
                                     <div>
                                         <p>លេខថ្មី</p>
-                                        <input type="number" class="input" style="margin-top: 5px;" v-model="newPayment.waterUsage"/>
+                                        <input type="number" class="input" style="margin-top: 5px;" v-model="targetRoomUsage.waterUsage"/>
                                     </div>
                                     <div>
                                         <p>លេខចាស់</p>
-                                        <input type="text" class="input" style="margin-top: 5px;" :value="props.lastRoomUsage?.waterUsage || 0" readonly/>
+                                        <input type="text" class="input" style="margin-top: 5px;" :value="lastRoomUsage?.waterUsage || 0" readonly/>
                                     </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ចំនួនm3</p>
-                                    <input type="text" class="input" :value="newPayment.waterUsage - (props.lastRoomUsage?.waterUsage || 0)" readonly/>
+                                    <input type="text" class="input" :value="targetRoomUsage.waterUsage - (lastRoomUsage?.waterUsage || 0)" readonly/>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ចំនួន1m3</p>
-                                    <input type="text" class="input" :value="(props.building?.waterPricePerUnit || 0) + ' ៛'" readonly/>
+                                    <input type="text" class="input" :value="(building?.waterPricePerUnit || 0) + ' ៛'" readonly/>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ថ្លៃទឹកសរុប</p>
-                                    <input type="text" class="input" :value="newPayment.waterPrice + ' ៛'" readonly/>
+                                    <input type="text" class="input" :value="targetRoomUsage.waterPrice + ' ៛'" readonly/>
                                 </div>
                             </td>
                         </tr>
@@ -162,30 +194,30 @@ const createPayment = async () => {
                                 <div class="flex">
                                     <div>
                                         <p>លេខថ្មី</p>
-                                        <input type="number" class="input" style="margin-top: 5px;" v-model="newPayment.electricityUsage"/>
+                                        <input type="number" class="input" style="margin-top: 5px;" v-model="targetRoomUsage.electricityUsage"/>
                                     </div>
                                     <div>
                                         <p>លេខចាស់</p>
-                                        <input type="text" class="input" style="margin-top: 5px;" :value="props.lastRoomUsage?.electricityUsage || 0" readonly/>
+                                        <input type="text" class="input" style="margin-top: 5px;" :value="lastRoomUsage?.electricityUsage || 0" readonly/>
                                     </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ចំនួនKw</p>
-                                    <input type="text" class="input" :value="newPayment.electricityUsage - (props.lastRoomUsage?.electricityUsage || 0)" readonly/>
+                                    <input type="text" class="input" :value="targetRoomUsage.electricityUsage - (lastRoomUsage?.electricityUsage || 0)" readonly/>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ចំនួន1Kw</p>
-                                    <input type="text" class="input" :value="(props.building?.electricityPricePerUnit || 0) + ' ៛'" readonly/>
+                                    <input type="text" class="input" :value="(building?.electricityPricePerUnit || 0) + ' ៛'" readonly/>
                                 </div>
                             </td>
                             <td>
                                 <div class="flex colomn center">
                                     <p>ថ្លៃភ្លើងសរុប</p>
-                                    <input type="text" class="input" :value="newPayment.electricityPrice + ' ៛'" readonly/>
+                                    <input type="text" class="input" :value="targetRoomUsage.electricityPrice + ' ៛'" readonly/>
                                 </div>
                             </td>
                         </tr>
@@ -193,7 +225,7 @@ const createPayment = async () => {
                             <td>
                                 <div class="">
                                     <p>តំលៃបន្ទប់ជួល</p>
-                                    <input type="text" class="input" style="margin-top: 5px;" :value="(props.room?.price || 0) + ' $'" readonly/>
+                                    <input type="text" class="input" style="margin-top: 5px;" :value="(room?.price || 0) + ' $'" readonly/>
                                 </div>
                             </td>
                             <td>
@@ -207,9 +239,9 @@ const createPayment = async () => {
                             <td>
                                 <div class="flex colomn center">
                                     <p>តំលៃបន្ទប់សរុប</p>
-                                    <input type="text" class="input" :value="(props.room?.price || 0) + ' $ / ' + ((props.room?.price || 0) * (props.building?.khrToUSDExchangeRate || 0)) + ' ៛'" readonly/>
+                                    <input type="text" class="input" :value="(room?.price || 0) + ' $ / ' + ((room?.price || 0) * (building?.khrToUSDExchangeRate || 0)) + ' ៛'" readonly/>
                                     <p>តំលៃកែសម្រួល ៛</p>
-                                    <input type="number" class="input" v-model="newPayment.adjustmentAmount"/>
+                                    <input type="number" class="input" v-model="targetRoomUsage.adjustmentAmount"/>
                                 </div>
                             </td>
                         </tr>
@@ -221,7 +253,7 @@ const createPayment = async () => {
                             </td>
                             <td>
                                 <div class="flex center">
-                                    <h3>{{ newPayment.totalAmountToPay + ' ៛'}}</h3>
+                                    <h3>{{ targetRoomUsage.totalAmountToPay + ' ៛'}}</h3>
                                 </div>
                             </td>
                         </tr>
@@ -231,7 +263,7 @@ const createPayment = async () => {
         </div>
         <div class="footer">
             <div class="button negative" @click="emit('close')">⌫ បកក្រោយ</div>
-            <div class="button" @click="createPayment">✔ រក្សាទុក</div>
+            <div class="button" @click="updatePayment">✔ រក្សាទុក</div>
             <div class="button" @click="emit('close')">🖨 ព្រីន</div>
         </div>
     </div>

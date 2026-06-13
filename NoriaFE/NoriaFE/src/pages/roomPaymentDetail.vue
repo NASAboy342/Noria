@@ -5,6 +5,7 @@ import type { RoomUsage } from "../models/roomUsage";
 import type { Building } from "../models/building";
 import LoadingComponent from "../components/loadingComponent.vue";
 import useApi from "../composables/useApi";
+import updateRoomPaymentForm from "../components/updateRoomPaymentForm.vue";
 
 const paymentId = ref<number>(0);
 const roomId = ref<number>(0);
@@ -15,14 +16,10 @@ const room = ref<AddRoomPayload | null>(null);
 const building = ref<Building | null>(null);
 const isLoading = ref(false);
 const isShowPaymentPopup = ref(false);
+const isShowPaymentUpdate = ref(false);
 const amountPaying = ref<number>(0);
 
-onMounted(async () => {
-    const params = new URLSearchParams(window.location.search);
-    paymentId.value = parseInt(params.get("paymentId") || "0");
-    roomId.value = parseInt(params.get("roomId") || "0");
-    buildingId.value = parseInt(params.get("buildingId") || "0");
-
+const syncData = async () => {
     try {
         isLoading.value = true;
         payment.value = await useApi().getPaymentById(paymentId.value);
@@ -31,10 +28,23 @@ onMounted(async () => {
     } finally {
         isLoading.value = false;
     }
+};
+
+onMounted(async () => {
+    const params = new URLSearchParams(window.location.search);
+    paymentId.value = parseInt(params.get("paymentId") || "0");
+    roomId.value = parseInt(params.get("roomId") || "0");
+    buildingId.value = parseInt(params.get("buildingId") || "0");
+
+    await syncData();
 });
 
 const goBack = () => {
     window.location.href = `/roomDetail?roomId=${roomId.value}&id=${buildingId.value}&buildingId=${buildingId.value}`;
+};
+
+const updatePayment = () => {
+    isShowPaymentUpdate.value = true;
 };
 
 const markAsPaid = () => {
@@ -56,6 +66,26 @@ const confirmPayment = async () => {
         };
         await useApi().doPayment(updated);
         payment.value = await useApi().getPaymentById(paymentId.value);
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+const cancelPayment = async () => {
+    if (!payment.value) return;
+    if (!confirm("តើអ្នកប្រាកដថាចង់លុបចោលការបង់ប្រាក់នេះ? សកម្មភាពនេះមិនអាចត្រឡប់ក្រោយបានទេ។")) return;
+
+    try {
+        isLoading.value = true;
+        const updated: RoomUsage = {
+            ...payment.value,
+            totalAmountPaid: 0,
+            isPaid: false,
+            updatedOn: new Date().toISOString(),
+        };
+        await useApi().updatePayment(updated);
+        payment.value = await useApi().getPaymentById(paymentId.value);
+        await syncData();
     } finally {
         isLoading.value = false;
     }
@@ -87,11 +117,13 @@ const confirmPayment = async () => {
                         <p class="status-label">ស្ថានភាព</p>
                         <p class="status-value">{{ payment?.isPaid ? 'បានបង់រួចហើយ' : (payment?.totalAmountPaid ?? 0) > 0 ? 'នៅសល់' : 'មិនទាន់បង់' }}</p>
                     </div>
-                    <div v-if="payment?.isPaid" style="margin-left: auto; text-align: right;">
+                    <div v-if="payment?.isPaid" style="margin-left: auto; text-align: right; display: flex; flex-direction: column; gap: 10px;">
                         <p class="status-label">បានបង់នៅថ្ងៃ</p>
                         <p class="status-value">{{ payment?.paidOn ? new Date(payment.paidOn).toLocaleDateString('km-KH') : '---' }}</p>
+                        <div class="button small" @click="cancelPayment">❌ លុបចោលការបង់ប្រាក់</div>
                     </div>
-                    <div v-else style="margin-left: auto;">
+                    <div v-else style="margin-left: auto; display: flex; gap: 10px;">
+                        <div class="button small" @click="updatePayment">🔧 កែសម្រួលវិក្កយបត្រ</div>
                         <div class="button small" @click="markAsPaid">✔ ធ្វើការបង់ប្រាក់</div>
                     </div>
                 </div>
@@ -146,8 +178,20 @@ const confirmPayment = async () => {
                             <span>ភ្លើង</span>
                         </div>
                         <div class="breakdown-detail">
-                            <span class="breakdown-sub">{{ payment?.electricityUsage ?? '---' }} យូនីត × ៛ {{ building?.electricityPricePerUnit ?? '---' }}</span>
+                            <span class="breakdown-sub">{{ payment?.electricityUsage ?? '---' }} kw × ៛ {{ building?.electricityPricePerUnit ?? '---' }}</span>
                             <span class="breakdown-value">៛ {{ payment?.electricityPrice ?? '---' }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Adjustment -->
+                    <div class="breakdown-row">
+                        <div class="breakdown-label">
+                            <span class="breakdown-icon">🔧</span>
+                            <span>កែសម្រួល</span>
+                        </div>
+                        <div class="breakdown-detail">
+                            <span class="breakdown-sub">---</span>
+                            <span class="breakdown-value">៛ {{ payment?.adjustmentAmount ?? '---' }}</span>
                         </div>
                     </div>
 
@@ -225,6 +269,16 @@ const confirmPayment = async () => {
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <div v-if="isShowPaymentUpdate" class="popup-container">
+        <div class="card" style="width: fit-content;">
+            <div class="flex space-between align-center" style="margin-bottom: 20px;">
+                <h2 style="margin: 0;">🔧 កែសម្រួលវិក្កយបត្រ</h2>
+                <div class="button small negative" @click="isShowPaymentUpdate = false">✕</div>
+            </div>
+            <updateRoomPaymentForm :paymentId="paymentId" :roomId="roomId" :buildingId="buildingId" @close="isShowPaymentUpdate = false" @payment-updated="syncData" />
         </div>
     </div>
 
