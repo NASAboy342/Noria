@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import type { AddRoomPayload } from "../models/addRoomPayload";
-import type { RoomUsage } from "../models/roomUsage";
+import { AddRoomPayload } from "../models/addRoomPayload";
+import { RoomUsage } from "../models/roomUsage";
 import LoadingComponent from "../components/loadingComponent.vue";
 import useApi from "../composables/useApi";
 import roomPaymentForm from "../components/roomPaymentForm.vue";
 import { Building } from "../models/building";
 import CustomTable from "../components/customTable.vue";
+import roomUpdateForm from "../components/roomUpdateForm.vue";
 
 const roomId = ref<number>(0);
 const buildingId = ref<number>(0);
-const room = ref<AddRoomPayload | null>(null);
-const building = ref<Building | null>(null);
+const room = ref<AddRoomPayload>(new AddRoomPayload());
+const building = ref<Building>(new Building());
 const paymentHistory = ref<RoomUsage[]>([]);
 const paymentHistoryInKhmerForDisplay = ref<any>([]);
 const isLoading = ref(false);
 const isShowAddPaymentPopup = ref(false);
 const lastRowsToFetch = 100;
 const paymentStatusLabel = ref<string>("---");
+const isShowUpdateRoom = ref(false);
 
 const syncPaymentHistory = async () => {
     if (!roomId.value || !buildingId.value) return;
@@ -30,11 +32,7 @@ const syncPaymentHistory = async () => {
     }
 };
 
-onMounted(async () => {
-    const params = new URLSearchParams(window.location.search);
-    roomId.value = parseInt(params.get("roomId") || "0");
-    buildingId.value = parseInt(params.get("buildingId") || "0");
-
+const syncDate = async () => {
     try {
         isLoading.value = true;
         // TODO: load room and payment history
@@ -44,6 +42,14 @@ onMounted(async () => {
     } finally {
         isLoading.value = false;
     }
+}
+
+onMounted(async () => {
+    const params = new URLSearchParams(window.location.search);
+    roomId.value = parseInt(params.get("roomId") || "0");
+    buildingId.value = parseInt(params.get("buildingId") || "0");
+
+    await syncDate();
 });
 
 const goBack = () => {
@@ -65,6 +71,20 @@ watch(() => paymentHistory.value, () => {
 const openRoomPaymentDetail = (index: number) => {
     var paymentId = paymentHistory.value[index].id;
     window.location.href = `/roomPaymentDetail?paymentId=${paymentId}&roomId=${roomId.value}&buildingId=${buildingId.value}`;
+}
+
+const CheckinCheckOut = async (isCheckIn: boolean) => {
+    if (!room.value) return;
+    if (!confirm(isCheckIn ? "តើអ្នកប្រាកដថាមានអ្នកចូលនៅបន្ទប់នេះហើយឬនៅ?" : "តើអ្នកប្រាកដថាគេឈប់នៅបន្ទប់នេះហើយឬនៅ?")) return;
+    try{
+        isLoading.value = true;
+        room.value.isOccupied = isCheckIn;
+        await useApi().updateRoom(room.value);
+        await syncDate();
+    }
+    finally{
+        isLoading.value = false;
+    }
 }
 </script>
 
@@ -111,6 +131,14 @@ const openRoomPaymentDetail = (index: number) => {
             </div>
         </div>
 
+        <div class="card room-info-card" style="margin-bottom: 20px;">
+            <div class="flex" style="gap: 10px; justify-content: flex-end;">
+                <div class="button small" @click="isShowUpdateRoom = true"> ⚙️ កែប្រែព័ត៌មានបន្ទប់</div>
+                <div v-if="room?.isOccupied" class="button small" @click="CheckinCheckOut(false)" > ❌ ឈប់នៅ</div>
+                <div v-else class="button small" @click="CheckinCheckOut(true)" > ✅ ចូលនៅ</div>
+            </div>
+        </div>
+
         <!-- Payment History -->
         <div class="card">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
@@ -141,6 +169,17 @@ const openRoomPaymentDetail = (index: number) => {
             </div>
             <!-- TODO: replace with roomPaymentForm component -->
             <roomPaymentForm @close="isShowAddPaymentPopup = false" @paymentCreated="syncPaymentHistory" :room="room" :building="building" :lastRoomUsage="paymentHistory[0]"/>
+        </div>
+    </div>
+
+    <div class="popup-container" v-if="isShowUpdateRoom">
+        <div class="card" style="width: fit-content;">
+            <div class="flex space-between align-center" style="margin-bottom: 20px;">
+                <h2 style="margin: 0;">⚙️ កែប្រែព័ត៌មានបន្ទប់</h2>
+                <div class="button small negative" @click="isShowUpdateRoom = false">✕</div>
+            </div>
+            <!-- TODO: replace with roomUpdateForm component -->
+            <roomUpdateForm @close="isShowUpdateRoom = false" :room="room" :building="building" @update="syncDate"/>
         </div>
     </div>
 </template>

@@ -130,6 +130,11 @@ export default function useApi() {
         messageStore.SetMessage('រក្សាទុកព័ត៌មានវិក្កយបត្របានជោគជ័យ', 'success')
     }
 
+    const updateRoom = async (payload: AddRoomPayload): Promise<void> => {
+        await apiPost('/System/update-room', payload)
+        messageStore.SetMessage('រក្សាទុកព័ត៌មានបន្ទប់បានជោគជ័យ', 'success')
+    }
+
     return {
         apiGet,
         apiPost,
@@ -145,6 +150,7 @@ export default function useApi() {
         getPaymentById,
         getPaymentHistory,
         getLastRoomUsage,
-        updatePayment
+        updatePayment,
+        updateRoom
     }
 }
