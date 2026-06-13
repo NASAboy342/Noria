@@ -6,13 +6,13 @@ import { Building } from "../models/building";
 import useApi from "../composables/useApi";
 import { useLoadingStore } from "../stores/loadingStore";
 
-const startDate = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 10));
+const startDate = ref(new Date(new Date().getFullYear(), new Date().getMonth()-1, 10));
 const startYear =  ref(startDate.value.getFullYear());
-const startMonth = ref(startDate.value.getMonth());
+const startMonth = ref(startDate.value.getMonth()+1);
 const startDay = ref(startDate.value.getDate());
-const endDate = ref(new Date(new Date().getFullYear(), new Date().getMonth()+1, 10));
+const endDate = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 10));
 const endYear = ref(endDate.value.getFullYear());
-const endMonth = ref(endDate.value.getMonth());
+const endMonth = ref(endDate.value.getMonth()+1);
 const endDay = ref(endDate.value.getDate());
 const loadingStore = useLoadingStore();
 const room = ref<AddRoomPayload>(new AddRoomPayload());
@@ -45,10 +45,10 @@ const syncData = async () => {
         if (props.paymentId) {
             targetRoomUsage.value = await useApi().getPaymentById(props.paymentId);
             startYear.value = new Date(targetRoomUsage.value.startTime).getFullYear();
-            startMonth.value = new Date(targetRoomUsage.value.startTime).getMonth();
+            startMonth.value = new Date(targetRoomUsage.value.startTime).getMonth()+1;
             startDay.value = new Date(targetRoomUsage.value.startTime).getDate();
             endYear.value = new Date(targetRoomUsage.value.endTime).getFullYear();
-            endMonth.value = new Date(targetRoomUsage.value.endTime).getMonth();
+            endMonth.value = new Date(targetRoomUsage.value.endTime).getMonth()+1;
             endDay.value = new Date(targetRoomUsage.value.endTime).getDate();
             lastRoomUsage.value = await useApi().getLastRoomUsage(props.buildingId, props.roomId, props.paymentId);
             calculateTotalAmountToPay();
@@ -70,14 +70,14 @@ watch(() => props.buildingId, async (newBuildingId) => {
 
 watch(() => targetRoomUsage.value?.waterUsage, (newVal) => {
     if (building.value && targetRoomUsage.value && newVal !== undefined) {
-        targetRoomUsage.value.waterPrice = newVal * (building.value.waterPricePerUnit || 0);
+        targetRoomUsage.value.waterPrice = (newVal - (lastRoomUsage.value?.waterUsage || 0)) * (building.value.waterPricePerUnit || 0); 
         calculateTotalAmountToPay();
     }
 });
 
 watch(() => targetRoomUsage.value?.electricityUsage, (newVal) => {
     if (building.value && targetRoomUsage.value && newVal !== undefined) {
-        targetRoomUsage.value.electricityPrice = newVal * (building.value.electricityPricePerUnit || 0);
+        targetRoomUsage.value.electricityPrice = (newVal - (lastRoomUsage.value?.electricityUsage || 0)) * (building.value.electricityPricePerUnit || 0);
         calculateTotalAmountToPay();
     }
 });
@@ -97,8 +97,8 @@ const updatePayment = async () => {
     try{
         loadingStore.startLoading("កំពុងកែប្រែវិក្កយបត្រ...");
         if(targetRoomUsage.value){
-            targetRoomUsage.value.startTime = new Date(startYear.value, startMonth.value-1, startDay.value).toISOString();
-            targetRoomUsage.value.endTime = new Date(endYear.value, endMonth.value-1, endDay.value).toISOString();
+            targetRoomUsage.value.startTime = new Date(startYear.value, startMonth.value-1, startDay.value).toLocaleString();
+            targetRoomUsage.value.endTime = new Date(endYear.value, endMonth.value-1, endDay.value).toLocaleString();
             await useApi().updatePayment(targetRoomUsage.value);
         }
         emit('paymentUpdated');

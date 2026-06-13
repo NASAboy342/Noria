@@ -6,13 +6,13 @@ import { Building } from "../models/building";
 import useApi from "../composables/useApi";
 import { useLoadingStore } from "../stores/loadingStore";
 
-const startDate = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 10));
+const startDate = ref(new Date(new Date().getFullYear(), new Date().getMonth()-1, 10));
 const startYear =  ref(startDate.value.getFullYear());
-const startMonth = ref(startDate.value.getMonth());
+const startMonth = ref(startDate.value.getMonth()+1);
 const startDay = ref(startDate.value.getDate());
-const endDate = ref(new Date(new Date().getFullYear(), new Date().getMonth()+1, 10));
+const endDate = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 10));
 const endYear = ref(endDate.value.getFullYear());
-const endMonth = ref(endDate.value.getMonth());
+const endMonth = ref(endDate.value.getMonth()+1);
 const endDay = ref(endDate.value.getDate());
 const newPayment = ref<RoomUsage>(new RoomUsage());
 const loadingStore = useLoadingStore();
@@ -39,14 +39,14 @@ watch(() => props.room, (newRoom) => {
 
 watch(() => newPayment.value.waterUsage, (newVal) => {
     if (props.building) {
-        newPayment.value.waterPrice = newVal * (props.building.waterPricePerUnit || 0);
+        newPayment.value.waterPrice = (newVal - (props.lastRoomUsage?.waterUsage || 0)) * (props.building.waterPricePerUnit || 0);
         calculateTotalAmountToPay();
     }
 });
 
 watch(() => newPayment.value.electricityUsage, (newVal) => {
     if (props.building) {
-        newPayment.value.electricityPrice = newVal * (props.building.electricityPricePerUnit || 0);
+        newPayment.value.electricityPrice = (newVal - (props.lastRoomUsage?.electricityUsage || 0)) * (props.building.electricityPricePerUnit || 0);
         calculateTotalAmountToPay();
     }
 });
@@ -63,11 +63,11 @@ const emit = defineEmits<{
 const createPayment = async () => {
     try{
         loadingStore.startLoading("កំពុងរក្សាទុកវិក្កយបត្រ...");
-        newPayment.value.startTime = new Date(startYear.value, startMonth.value-1, startDay.value).toISOString();
-        newPayment.value.endTime = new Date(endYear.value, endMonth.value-1, endDay.value).toISOString();
-        newPayment.value.createdOn = new Date().toISOString();
-        newPayment.value.updatedOn = new Date().toISOString();
-        newPayment.value.paidOn = new Date().toISOString();
+        newPayment.value.startTime = new Date(startYear.value, startMonth.value-1, startDay.value).toLocaleString(); // Use toLocaleString() instead of toISOString() to avoid timezone issues and format should look like this "2026-06-13T14:18:26.397"
+        newPayment.value.endTime = new Date(endYear.value, endMonth.value-1, endDay.value).toLocaleString();
+        newPayment.value.createdOn = new Date().toLocaleString();
+        newPayment.value.updatedOn = new Date().toLocaleString();
+        newPayment.value.paidOn = new Date().toLocaleString();
         await useApi().createPayment(newPayment.value);
         emit('paymentCreated');
         emit('close');
