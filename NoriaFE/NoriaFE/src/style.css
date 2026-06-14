@@ -19,6 +19,9 @@
   --dented-shadow: rgb(255, 255, 255) -4px -4px 10px inset, rgb(209, 217, 230) 4px 4px 10px inset;
   --dented-shadow-shallow: rgb(255, 255, 255) -2px -2px 5px inset, rgb(209, 217, 230) 2px 2px 5px inset;
 }
+* {
+  -webkit-tap-highlight-color: transparent;
+}
 
 body {
   margin: 0;
@@ -42,6 +45,9 @@ body {
 }
 .card p{
   margin: 0;
+}
+.card.mobile{
+  padding: 15px;
 }
 
 .button {
@@ -69,6 +75,13 @@ body {
   margin: 0;
 }
 .button.small {
+  padding: 10px;
+  width: fit-content;
+  height: fit-content;
+  font-size: 18px;
+}
+
+.button.mobile {
   padding: 10px;
   width: fit-content;
   height: fit-content;
