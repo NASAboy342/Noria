@@ -27,7 +27,7 @@ const syncBuilding = async () => {
 const syncRoom = async () => {
     rooms.value = await getRooms(buildingid.value);
     roomInKhmer.value = rooms.value.map(room => ({
-        បន្ទប់លេខ: room.name , លេខទូរស័ព្ទ: room.phoneNumber ,ជាន់ទី: room.floor ,មានអ្នកស្នាក់នៅហើយឬនៅ: room.isOccupied ? "🟢 មានអ្នកស្នាក់នៅ" : "🔴 គ្មានអ្នកស្នាក់នៅ",តម្លៃ: room.price
+        បន្ទប់លេខ: room.name ,ជាន់ទី: room.floor ,មានអ្នកស្នាក់នៅហើយឬនៅ: room.isOccupied ? "🟢 មានអ្នកស្នាក់នៅ" : "🔴 គ្មានអ្នកស្នាក់នៅ",តម្លៃ: room.price
     }));
 }
 
