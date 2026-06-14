@@ -7,7 +7,7 @@ import useApi from "../composables/useApi";
 import roomPaymentForm from "../components/roomPaymentForm.vue";
 import { Building } from "../models/building";
 import CustomTable from "../components/customTable.vue";
-import roomUpdateForm from "../components/roomUpdateForm.vue";
+import updateRoomForm from "../components/updateRoomForm.vue";
 
 const roomId = ref<number>(0);
 const buildingId = ref<number>(0);
@@ -178,8 +178,8 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
                 <h2 style="margin: 0;">⚙️ កែប្រែព័ត៌មានបន្ទប់</h2>
                 <div class="button small negative" @click="isShowUpdateRoom = false">✕</div>
             </div>
-            <!-- TODO: replace with roomUpdateForm component -->
-            <roomUpdateForm @close="isShowUpdateRoom = false" :room="room" :building="building" @update="syncDate"/>
+            <!-- TODO: replace with updateRoomForm component -->
+            <updateRoomForm @close="isShowUpdateRoom = false" :room="room" :building="building" @update="syncDate"/>
         </div>
     </div>
 </template>
