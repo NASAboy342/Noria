@@ -177,7 +177,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
     </div>
 </template>
 
-<style scoped >
+<style lang="css">
 .room-detail-page {
     display: flex;
     flex-direction: column;
