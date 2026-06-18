@@ -37,6 +37,12 @@ jobs:
         Write-Host "Build completed successfully!"
         Write-Host "Ready to copy build to deployment directory..."
         Stop-WebAppPool -Name "NoriaFE"
+        do {
+          Start-Sleep -Seconds 1
+          $state = (Get-WebAppPoolState -Name "NoriaFE").Value
+          Write-Host "Current state: $state"
+        }
+        until ($state -eq "Stopped")
         Write-Host "Copying files from dist to ${{ env.destinationDir }}"
         Copy-Item -Path "dist/*" -Destination "${{ env.destinationDir }}" -Recurse -Force
         Start-WebAppPool -Name "NoriaFE"
