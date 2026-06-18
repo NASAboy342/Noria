@@ -103,7 +103,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
                 </div>
             </div>
 
-            <div class="info-grid">
+            <div class="info-grid-mobile">
                 <div class="info-item">
                     <p class="info-label">ជាន់ទី</p>
                     <p class="info-value">{{ room?.floor ?? '---' }}</p>
@@ -188,7 +188,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
     flex-direction: column;
 }
 
-.info-grid {
+.info-grid-mobile {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
