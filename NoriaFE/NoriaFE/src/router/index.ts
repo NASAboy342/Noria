@@ -10,6 +10,7 @@ import RoomDetail from '../pages/roomDetail.vue'
 import RoomDetailMobile from '../pages/roomDetailMobile.vue'
 
 import RoomPaymentDetail from '../pages/roomPaymentDetail.vue'
+import RoomPaymentDetailMobile from '../pages/roomPaymentDetailMobile.vue'
 
 const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
   navigator.userAgent
@@ -34,7 +35,7 @@ const routes = [
   {
     path: '/roomPaymentDetail',
     name: 'វិក្កយបត្រ',
-    component: RoomPaymentDetail
+    component: isMobile ? RoomPaymentDetailMobile : RoomPaymentDetail
   }
 ]
 

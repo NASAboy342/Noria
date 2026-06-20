@@ -165,7 +165,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
     </div>
 
     <div class="popup-container" v-if="isShowUpdateRoom">
-        <div class="card " style="width: fit-content;">
+        <div class="card mobile" style="width: 300px;">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
                 <h2 style="margin: 0;">⚙️ កែប្រែព័ត៌មានបន្ទប់</h2>
                 <div class="button small negative" @click="isShowUpdateRoom = false">✕</div>
