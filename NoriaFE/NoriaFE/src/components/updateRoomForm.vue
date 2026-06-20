@@ -15,11 +15,11 @@
                 <input v-model="props.room.phoneNumber" type="text" placeholder="លេខទូរស័ព្ទ" class="input" />
             </div>
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-group" style="width: 48%;">
                     <p>ជាន់ទី</p>
                     <input v-model.number="props.room.floor" type="number" placeholder="0" class="input" />
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="width: 48%;">
                     <p>តម្លៃបន្ទប់ គឺជា($)</p>
                     <input v-model.number="props.room.price" type="number" placeholder="0" class="input" />
                 </div>
@@ -95,9 +95,8 @@ const updateRoom = async () => {
 }
 
 .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .component-footer {
