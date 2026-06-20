@@ -91,7 +91,7 @@ const goToRoomDetail = (index: number) => {
 
 <template>
     <div class="rooms-page">
-        <div class="card">
+        <!-- <div class="card"> -->
             <!-- <div class="flex space-between">
                 <h1>🛏️ ព័ត៍មានបន្ទប់របស់អាគារ [ {{ building?.name }} ]</h1>
                 <div class="flex align-center">
@@ -101,7 +101,7 @@ const goToRoomDetail = (index: number) => {
             </div> -->
             <customTable :objects="roomInKhmer" @row-click="goToRoomDetail"/>
             <LoadingComponent v-if="isLoading" style="margin-top: 20px;"/>
-        </div>
+        <!-- </div> -->
 
 
     </div>

@@ -58,11 +58,10 @@ const goBack = () => {
 
 watch(() => paymentHistory.value, () => {
     paymentHistoryInKhmerForDisplay.value = paymentHistory.value.map(payment => ({
-        ចាប់ពី: new Date(payment.startTime).toLocaleDateString('km-KH'),
-        ដល់: new Date(payment.endTime).toLocaleDateString('km-KH'),
-        ចំនួនទឹកប្រាក់សរុប: payment.totalAmountToPay,
+        ចាប់ពីនិងទៅដល់: new Date(payment.startTime).toLocaleDateString('km-KH') + " " + new Date(payment.endTime).toLocaleDateString('km-KH'),
+        // ដល់: new Date(payment.endTime).toLocaleDateString('km-KH'),
+        ចំនួននៅសល់: payment.totalAmountToPay - (payment.totalAmountPaid ?? 0),
         បានបង់ហើយឬនៅ: payment.isPaid ? "✅ បានបង់" : (payment.totalAmountPaid ?? 0) > 0 ? "🟡 នៅសល់" : "❌ មិនទាន់បង់",
-        បានបង់នៅ:  payment.isPaid ? new Date(payment.paidOn).toLocaleDateString('km-KH') : "---",
     }));
 
     paymentStatusLabel.value = paymentHistory.value.some(payment => !payment.isPaid) ? "❌ នៅសល់" : paymentHistory.value.length > 0 ? "✅ បានបង់រួចហើយ" : "---";
@@ -92,7 +91,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
     <div class="room-detail-page">
 
         <!-- Room Info Card -->
-        <div class="card room-info-card" style="margin-bottom: 20px;">
+        <div class="card mobile room-info-card" style="margin-bottom: 20px;">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
                 <h2 style="margin: 0;">{{ room?.name ?? '---' }}</h2>
                 <div
@@ -125,7 +124,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
             </div>
         </div>
 
-        <div class="card room-info-card" style="margin-bottom: 20px;">
+        <div class="card mobile room-info-card" style="margin-bottom: 20px;">
             <div class="flex" style="gap: 10px; justify-content: flex-end;">
                 <div class="button small" @click="isShowUpdateRoom = true"> ⚙️ កែប្រែព័ត៌មានបន្ទប់</div>
                 <div v-if="room?.isOccupied" class="button small" @click="CheckinCheckOut(false)" > ❌ ឈប់នៅ</div>
@@ -134,7 +133,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
         </div>
 
         <!-- Payment History -->
-        <div class="card">
+        <div class="card mobile">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
                 <h2 style="margin: 0;">📋 ប្រវត្តិការបង់ប្រាក់</h2>
             </div>
@@ -166,7 +165,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
     </div>
 
     <div class="popup-container" v-if="isShowUpdateRoom">
-        <div class="card" style="width: fit-content;">
+        <div class="card " style="width: fit-content;">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
                 <h2 style="margin: 0;">⚙️ កែប្រែព័ត៌មានបន្ទប់</h2>
                 <div class="button small negative" @click="isShowUpdateRoom = false">✕</div>
