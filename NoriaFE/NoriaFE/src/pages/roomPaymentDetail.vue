@@ -273,7 +273,7 @@ const cancelPayment = async () => {
     </div>
 
     <div v-if="isShowPaymentUpdate" class="popup-container">
-        <div class="card" style="width: fit-content;">
+        <div class="card" style="width: fit-content; max-height: 90vh; overflow-y: auto;">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
                 <h2 style="margin: 0;">🔧 កែសម្រួលវិក្កយបត្រ</h2>
                 <div class="button small negative" @click="isShowPaymentUpdate = false">✕</div>

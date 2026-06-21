@@ -162,7 +162,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
 
     <!-- Add Payment Popup -->
     <div class="popup-container" v-if="isShowAddPaymentPopup">
-        <div class="card" style="width: fit-content;">
+        <div class="card" style="width: fit-content; max-height: 90vh; overflow-y: auto;">
             <div class="flex space-between align-center" style="margin-bottom: 20px;">
                 <h2 style="margin: 0;">+ សរសេរវិក្កយបត្រថ្មី</h2>
                 <div class="button small negative" @click="isShowAddPaymentPopup = false">✕</div>

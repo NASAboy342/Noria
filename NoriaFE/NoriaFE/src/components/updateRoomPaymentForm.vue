@@ -300,7 +300,7 @@ tr{
 }
 td{
     border: 1px solid var(--border-color);
-    height: 100px;
+    height: fit-content;
     padding: 10px;
 }
 td input{
