@@ -31,6 +31,14 @@
                     <option :value="false">គ្មាន</option>
                 </select>
             </div>
+            <div class="form-group">
+                <p>ប្រាក់ដែលត្រូវកក់ $</p>
+                <input v-model.number="form.requiredDepositAmount" type="number" placeholder="ប្រាក់ដែលត្រូវកក់ $" class="input" />
+            </div>
+            <div class="form-group">
+                <p>ប្រាក់ដែលបានកក់ $</p>
+                <input v-model.number="form.deposit" type="number" placeholder="ប្រាក់ដែលបានកក់ $" class="input" />
+            </div>
         </div>
 
         <div class="component-footer flex align-right">
