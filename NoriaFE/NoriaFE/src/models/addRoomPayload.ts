@@ -6,4 +6,6 @@ export class AddRoomPayload {
     phoneNumber: string = ''
     floor: number = 0
     price: number = 0
+    deposit: number = 0
+    requiredDepositAmount: number = 0
 }

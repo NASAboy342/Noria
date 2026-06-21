@@ -123,6 +123,10 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
                     <p class="info-value focus">$ {{ room?.price ?? '---' }}</p>
                 </div>
                 <div class="info-item">
+                    <p class="info-label">ប្រាក់កក់</p>
+                    <p class="info-value">$ {{ room?.deposit ?? '---' }} / $ {{ room?.requiredDepositAmount ?? '---' }}</p>
+                </div>
+                <div class="info-item">
                     <p class="info-label">ស្ថានភាពការបង់ប្រាក់</p>
                     <p class="info-value" :class="room?.isOccupied ? '' : 'negative'">
                         {{ paymentStatusLabel }}
@@ -197,7 +201,7 @@ const CheckinCheckOut = async (isCheckIn: boolean) => {
 
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
 }
 
